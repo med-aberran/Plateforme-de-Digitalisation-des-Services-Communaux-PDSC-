@@ -1,0 +1,562 @@
+# French translations for PDSC.
+# Copyright (C) 2026 Commune
+# This file is distributed under the same license as the PDSC project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PDSC VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-08-10 20:13+0000\n"
+"PO-Revision-Date: 2026-07-29 18:36+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: forms.py:32 forms.py:84 forms.py:169
+msgid "Prénom"
+msgstr "Prénom"
+
+#: forms.py:33 forms.py:85 forms.py:170
+msgid "Nom"
+msgstr "Nom"
+
+#: forms.py:34 forms.py:51 forms.py:58 forms.py:124 forms.py:171
+msgid "Adresse e-mail"
+msgstr "Adresse e-mail"
+
+#: forms.py:35 forms.py:86 forms.py:172
+msgid "Téléphone"
+msgstr "Téléphone"
+
+#: forms.py:36
+msgid "CIN"
+msgstr "CIN"
+
+#: forms.py:37 forms.py:52
+msgid "Mot de passe"
+msgstr "Mot de passe"
+
+#: forms.py:39 forms.py:65 forms.py:74
+msgid "Confirmer le mot de passe"
+msgstr "Confirmer le mot de passe"
+
+#: forms.py:40 forms.py:66 forms.py:75
+msgid "Les mots de passe ne correspondent pas."
+msgstr "Les mots de passe ne correspondent pas."
+
+#: forms.py:42
+msgid "J'accepte les conditions d'utilisation"
+msgstr "J'accepte les conditions d'utilisation"
+
+#: forms.py:43
+msgid "S'inscrire"
+msgstr "S'inscrire"
+
+#: forms.py:47 routes.py:931
+msgid "Cette adresse e-mail est déjà utilisée."
+msgstr "Cette adresse e-mail est déjà utilisée."
+
+#: forms.py:53
+msgid "Se souvenir de moi"
+msgstr "Se souvenir de moi"
+
+#: forms.py:54
+msgid "Se connecter"
+msgstr "Se connecter"
+
+#: forms.py:59
+msgid "Envoyer le lien de réinitialisation"
+msgstr "Envoyer le lien de réinitialisation"
+
+#: forms.py:63 forms.py:72
+msgid "Nouveau mot de passe"
+msgstr "Nouveau mot de passe"
+
+#: forms.py:67
+msgid "Réinitialiser le mot de passe"
+msgstr "Réinitialiser le mot de passe"
+
+#: forms.py:71
+msgid "Mot de passe actuel"
+msgstr "Mot de passe actuel"
+
+#: forms.py:76
+msgid "Changer le mot de passe"
+msgstr "Changer le mot de passe"
+
+#: forms.py:87
+msgid "Adresse"
+msgstr "Adresse"
+
+#: forms.py:88
+msgid "Ville"
+msgstr "Ville"
+
+#: forms.py:89
+msgid "Photo de profil"
+msgstr "Photo de profil"
+
+#: forms.py:89 forms.py:197 forms.py:212 forms.py:242
+msgid "Images uniquement."
+msgstr "Images uniquement."
+
+#: forms.py:90
+msgid "Langue préférée"
+msgstr "Langue préférée"
+
+#: forms.py:91 forms.py:179 forms.py:187 forms.py:200 forms.py:214 forms.py:225
+#: forms.py:235 forms.py:255
+msgid "Enregistrer"
+msgstr "Enregistrer"
+
+#: forms.py:99 forms.py:108 forms.py:218
+msgid "Service concerné"
+msgstr "Service concerné"
+
+#: forms.py:100
+msgid "Description de la demande"
+msgstr "Description de la demande"
+
+#: forms.py:102
+msgid "Pièces jointes"
+msgstr "Pièces jointes"
+
+#: forms.py:103
+msgid "Formats autorisés : PDF, DOC, DOCX, JPG, PNG."
+msgstr "Formats autorisés : PDF, DOC, DOCX, JPG, PNG."
+
+#: forms.py:104
+msgid "Soumettre la demande"
+msgstr "Soumettre la demande"
+
+#: forms.py:109
+msgid "Date souhaitée"
+msgstr "Date souhaitée"
+
+#: forms.py:110
+msgid "Heure souhaitée"
+msgstr "Heure souhaitée"
+
+#: forms.py:111
+msgid "Motif du rendez-vous"
+msgstr "Motif du rendez-vous"
+
+#: forms.py:112
+msgid "Réserver"
+msgstr "Réserver"
+
+#: forms.py:116
+msgid "Département concerné"
+msgstr "Département concerné"
+
+#: forms.py:117 forms.py:125
+msgid "Objet"
+msgstr "Objet"
+
+#: forms.py:118
+msgid "Description"
+msgstr "Description"
+
+#: forms.py:119
+msgid "Envoyer la réclamation"
+msgstr "Envoyer la réclamation"
+
+#: forms.py:123
+msgid "Nom complet"
+msgstr "Nom complet"
+
+#: forms.py:126
+msgid "Message"
+msgstr "Message"
+
+#: forms.py:127
+msgid "Envoyer"
+msgstr "Envoyer"
+
+#: forms.py:138
+msgid "Nouveau statut"
+msgstr "Nouveau statut"
+
+#: forms.py:139
+msgid "Commentaire (visible par le citoyen)"
+msgstr "Commentaire (visible par le citoyen)"
+
+#: forms.py:140 forms.py:155
+msgid "Mettre à jour"
+msgstr "Mettre à jour"
+
+#: forms.py:144
+msgid "Ajouter un commentaire"
+msgstr "Ajouter un commentaire"
+
+#: forms.py:145
+msgid "Publier"
+msgstr "Publier"
+
+#: forms.py:149
+msgid "Affecter à l'employé"
+msgstr "Affecter à l'employé"
+
+#: forms.py:150
+msgid "Affecter"
+msgstr "Affecter"
+
+#: forms.py:154 forms.py:160
+msgid "Statut"
+msgstr "Statut"
+
+#: forms.py:159
+msgid "Réponse"
+msgstr "Réponse"
+
+#: forms.py:161
+msgid "Répondre"
+msgstr "Répondre"
+
+#: forms.py:173
+msgid "Rôle"
+msgstr "Rôle"
+
+#: forms.py:174
+msgid "Département (employé)"
+msgstr "Département (employé)"
+
+#: forms.py:175
+msgid "Compte actif"
+msgstr "Compte actif"
+
+#: forms.py:177
+msgid "Mot de passe (laisser vide pour ne pas modifier)"
+msgstr "Mot de passe (laisser vide pour ne pas modifier)"
+
+#: forms.py:183 forms.py:192
+msgid "Nom (Français)"
+msgstr "Nom (Français)"
+
+#: forms.py:184 forms.py:193
+msgid "Nom (Arabe)"
+msgstr "Nom (Arabe)"
+
+#: forms.py:185 forms.py:194 forms.py:231
+msgid "Description (Français)"
+msgstr "Description (Français)"
+
+#: forms.py:186 forms.py:195 forms.py:232
+msgid "Description (Arabe)"
+msgstr "Description (Arabe)"
+
+#: forms.py:191
+msgid "Département"
+msgstr "Département"
+
+#: forms.py:196
+msgid "Icône (classe Bootstrap Icons)"
+msgstr "Icône (classe Bootstrap Icons)"
+
+#: forms.py:197 forms.py:212 forms.py:242
+msgid "Image"
+msgstr "Image"
+
+#: forms.py:198
+msgid "Ordre d'affichage"
+msgstr "Ordre d'affichage"
+
+#: forms.py:199 forms.py:234
+msgid "Actif"
+msgstr "Actif"
+
+#: forms.py:208 forms.py:219 forms.py:229 forms.py:239 forms.py:247
+msgid "Titre (Français)"
+msgstr "Titre (Français)"
+
+#: forms.py:209 forms.py:220 forms.py:230 forms.py:240 forms.py:248
+msgid "Titre (Arabe)"
+msgstr "Titre (Arabe)"
+
+#: forms.py:210
+msgid "Contenu (Français)"
+msgstr "Contenu (Français)"
+
+#: forms.py:211
+msgid "Contenu (Arabe)"
+msgstr "Contenu (Arabe)"
+
+#: forms.py:213
+msgid "Publiée"
+msgstr "Publiée"
+
+#: forms.py:221
+msgid "Référence / Numéro"
+msgstr "Référence / Numéro"
+
+#: forms.py:222 forms.py:241
+msgid "Catégorie"
+msgstr "Catégorie"
+
+#: forms.py:224
+msgid "Fichier"
+msgstr "Fichier"
+
+#: forms.py:224
+msgid "Formats autorisés : PDF, DOC, DOCX."
+msgstr "Formats autorisés : PDF, DOC, DOCX."
+
+#: forms.py:233
+msgid "Fichier PDF"
+msgstr "Fichier PDF"
+
+#: forms.py:233
+msgid "PDF uniquement."
+msgstr "PDF uniquement."
+
+#: forms.py:243 forms.py:250
+msgid "Ajouter"
+msgstr "Ajouter"
+
+#: forms.py:249
+msgid "URL de la vidéo (YouTube/Vimeo)"
+msgstr "URL de la vidéo (YouTube/Vimeo)"
+
+#: forms.py:254
+msgid "Valeur"
+msgstr "Valeur"
+
+#: forms.py:259 forms.py:260
+msgid "Rechercher"
+msgstr "Rechercher"
+
+#: routes.py:133
+msgid "Votre message a bien été envoyé. Nous vous répondrons rapidement."
+msgstr "Votre message a bien été envoyé. Nous vous répondrons rapidement."
+
+#: routes.py:205
+msgid "Veuillez saisir un numéro de suivi valide."
+msgstr "Veuillez saisir un numéro de suivi valide."
+
+#: routes.py:213
+msgid "Aucune demande ne correspond à ce numéro de suivi."
+msgstr "Aucune demande ne correspond à ce numéro de suivi."
+
+#: routes.py:266
+msgid "Inscription réussie ! Un e-mail de vérification vous a été envoyé."
+msgstr "Inscription réussie ! Un e-mail de vérification vous a été envoyé."
+
+#: routes.py:268
+#, python-format
+msgid "[Développement] Lien de vérification : %(url)s"
+msgstr "[Développement] Lien de vérification : %(url)s"
+
+#: routes.py:279
+msgid "Le lien de vérification est invalide ou expiré."
+msgstr "Le lien de vérification est invalide ou expiré."
+
+#: routes.py:285
+msgid "Votre adresse e-mail a été vérifiée. Vous pouvez maintenant vous connecter."
+msgstr "Votre adresse e-mail a été vérifiée. Vous pouvez maintenant vous connecter."
+
+#: routes.py:299
+msgid "Votre compte a été désactivé. Contactez l'administration."
+msgstr "Votre compte a été désactivé. Contactez l'administration."
+
+#: routes.py:305
+msgid "Adresse e-mail ou mot de passe incorrect."
+msgstr "Adresse e-mail ou mot de passe incorrect."
+
+#: routes.py:315
+msgid "Vous avez été déconnecté avec succès."
+msgstr "Vous avez été déconnecté avec succès."
+
+#: routes.py:333
+#, python-format
+msgid "[Développement] Lien de réinitialisation : %(url)s"
+msgstr "[Développement] Lien de réinitialisation : %(url)s"
+
+#: routes.py:334
+msgid "Si un compte existe avec cette adresse, un e-mail a été envoyé."
+msgstr "Si un compte existe avec cette adresse, un e-mail a été envoyé."
+
+#: routes.py:343
+msgid "Le lien de réinitialisation est invalide ou expiré."
+msgstr "Le lien de réinitialisation est invalide ou expiré."
+
+#: routes.py:352
+msgid "Votre mot de passe a été réinitialisé. Vous pouvez vous connecter."
+msgstr "Votre mot de passe a été réinitialisé. Vous pouvez vous connecter."
+
+#: routes.py:387
+msgid "Votre profil a été mis à jour avec succès."
+msgstr "Votre profil a été mis à jour avec succès."
+
+#: routes.py:400
+msgid "Le mot de passe actuel est incorrect."
+msgstr "Le mot de passe actuel est incorrect."
+
+#: routes.py:405
+msgid "Votre mot de passe a été modifié avec succès."
+msgstr "Votre mot de passe a été modifié avec succès."
+
+#: routes.py:603
+#, python-format
+msgid "Votre demande a été soumise avec succès. Numéro de suivi : %(num)s"
+msgstr "Votre demande a été soumise avec succès. Numéro de suivi : %(num)s"
+
+#: routes.py:651
+#, python-format
+msgid "Mise à jour de votre demande %(num)s"
+msgstr "Mise à jour de votre demande %(num)s"
+
+#: routes.py:652 routes.py:784
+#, python-format
+msgid "Nouveau statut : %(status)s"
+msgstr "Nouveau statut : %(status)s"
+
+#: routes.py:655
+msgid "Le statut de la demande a été mis à jour."
+msgstr "Le statut de la demande a été mis à jour."
+
+#: routes.py:675
+msgid "Nouveau commentaire sur votre demande"
+msgstr "Nouveau commentaire sur votre demande"
+
+#: routes.py:677
+msgid "Votre commentaire a été publié."
+msgstr "Votre commentaire a été publié."
+
+#: routes.py:698
+msgid "La demande a été affectée avec succès."
+msgstr "La demande a été affectée avec succès."
+
+#: routes.py:759
+msgid "Votre demande de rendez-vous a été enregistrée."
+msgstr "Votre demande de rendez-vous a été enregistrée."
+
+#: routes.py:783
+msgid "Mise à jour de votre rendez-vous"
+msgstr "Mise à jour de votre rendez-vous"
+
+#: routes.py:786
+msgid "Le statut du rendez-vous a été mis à jour."
+msgstr "Le statut du rendez-vous a été mis à jour."
+
+#: routes.py:802
+msgid "Le rendez-vous a été annulé."
+msgstr "Le rendez-vous a été annulé."
+
+#: routes.py:839
+msgid "Votre réclamation a été envoyée. Nous la traiterons rapidement."
+msgstr "Votre réclamation a été envoyée. Nous la traiterons rapidement."
+
+#: routes.py:882
+msgid "Réponse à votre réclamation"
+msgstr "Réponse à votre réclamation"
+
+#: routes.py:885
+msgid "Votre réponse a été envoyée au citoyen."
+msgstr "Votre réponse a été envoyée au citoyen."
+
+#: routes.py:952
+msgid "Utilisateur créé avec succès."
+msgstr "Utilisateur créé avec succès."
+
+#: routes.py:978
+msgid "Utilisateur mis à jour avec succès."
+msgstr "Utilisateur mis à jour avec succès."
+
+#: routes.py:991
+msgid "Le statut du compte a été mis à jour."
+msgstr "Le statut du compte a été mis à jour."
+
+#: routes.py:1000
+msgid "Vous ne pouvez pas supprimer votre propre compte."
+msgstr "Vous ne pouvez pas supprimer votre propre compte."
+
+#: routes.py:1005
+msgid "Utilisateur supprimé avec succès."
+msgstr "Utilisateur supprimé avec succès."
+
+#: routes.py:1022
+msgid "Département créé avec succès."
+msgstr "Département créé avec succès."
+
+#: routes.py:1039
+msgid "Département mis à jour avec succès."
+msgstr "Département mis à jour avec succès."
+
+#: routes.py:1051
+msgid "Département supprimé avec succès."
+msgstr "Département supprimé avec succès."
+
+#: routes.py:1084
+msgid "Service créé avec succès."
+msgstr "Service créé avec succès."
+
+#: routes.py:1110
+msgid "Service mis à jour avec succès."
+msgstr "Service mis à jour avec succès."
+
+#: routes.py:1123
+msgid "Service supprimé avec succès."
+msgstr "Service supprimé avec succès."
+
+#: routes.py:1142
+msgid "Actualité publiée avec succès."
+msgstr "Actualité publiée avec succès."
+
+#: routes.py:1163
+msgid "Actualité mise à jour avec succès."
+msgstr "Actualité mise à jour avec succès."
+
+#: routes.py:1176
+msgid "Actualité supprimée avec succès."
+msgstr "Actualité supprimée avec succès."
+
+#: routes.py:1198
+msgid "Document publié avec succès."
+msgstr "Document publié avec succès."
+
+#: routes.py:1222
+msgid "Document mis à jour avec succès."
+msgstr "Document mis à jour avec succès."
+
+#: routes.py:1235
+msgid "Document supprimé avec succès."
+msgstr "Document supprimé avec succès."
+
+#: routes.py:1250
+msgid "Plan d'aménagement ajouté avec succès."
+msgstr "Plan d'aménagement ajouté avec succès."
+
+#: routes.py:1263
+msgid "Le plan d'aménagement affiché sur le site a été mis à jour."
+msgstr "Le plan d'aménagement affiché sur le site a été mis à jour."
+
+#: routes.py:1274
+msgid "Plan d'aménagement supprimé avec succès."
+msgstr "Plan d'aménagement supprimé avec succès."
+
+#: routes.py:1292
+msgid "Image ajoutée à la galerie avec succès."
+msgstr "Image ajoutée à la galerie avec succès."
+
+#: routes.py:1305
+msgid "Image supprimée avec succès."
+msgstr "Image supprimée avec succès."
+
+#: routes.py:1316
+msgid "Vidéo ajoutée avec succès."
+msgstr "Vidéo ajoutée avec succès."
+
+#: routes.py:1328
+msgid "Vidéo supprimée avec succès."
+msgstr "Vidéo supprimée avec succès."
+
+#: routes.py:1347
+msgid "Paramètre mis à jour avec succès."
+msgstr "Paramètre mis à jour avec succès."
+

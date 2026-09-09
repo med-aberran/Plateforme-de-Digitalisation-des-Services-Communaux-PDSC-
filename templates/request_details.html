@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Suivi de demande' if current_lang=='fr' else 'تتبع الطلب' }}{% endblock %}
+{% block content %}
+
+{% if public_view and not service_request %}
+<!-- ============================= FORMULAIRE DE SUIVI PUBLIC ============================= -->
+<section class="auth-section">
+    <div class="auth-card">
+        <div class="auth-visual">
+            <div class="auth-visual-pattern"></div>
+            <span class="brand-emblem large"><i class="bi bi-qr-code-scan"></i></span>
+            <h2>{{ 'Suivi de demande' if current_lang=='fr' else 'تتبع الطلب' }}</h2>
+            <p>{{ "Entrez votre numéro de suivi ou scannez le QR code de votre récépissé." if current_lang=='fr' else 'أدخلوا رقم التتبع أو امسحوا رمز QR الموجود على وصلكم.' }}</p>
+        </div>
+        <div class="auth-form-wrap">
+            <h1 class="auth-title">{{ 'Numéro de suivi' if current_lang=='fr' else 'رقم التتبع' }}</h1>
+            <form method="post" action="{{ url_for('track_request_form') }}">
+                <div class="form-floating mb-3">
+                    <input type="text" name="tracking_number" class="form-control" placeholder="DEM-2026-XXXXXX" required>
+                    <label>{{ 'Ex : DEM-2026-A1B2C3' if current_lang=='fr' else 'مثال: DEM-2026-A1B2C3' }}</label>
+                </div>
+                <button type="submit" class="btn btn-primary-custom w-100"><i class="bi bi-search"></i> {{ 'Suivre ma demande' if current_lang=='fr' else 'تتبع طلبي' }}</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% else %}
+<!-- ============================= DETAIL DE LA DEMANDE ============================= -->
+<div class="dashboard-header">
+    <div>
+        <h1><span class="mono">{{ service_request.tracking_number }}</span></h1>
+        <p>{{ service_request.service.name_fr if current_lang=='fr' else service_request.service.name_ar }}</p>
+    </div>
+    <span class="badge-status badge-lg badge-{{ service_request.status_css() }}">{{ service_request.status_label(current_lang) }}</span>
+</div>
+
+<div class="request-detail-grid">
+    <div class="request-detail-main">
+
+        <div class="content-card">
+            <h3><i class="bi bi-info-circle"></i> {{ 'Informations générales' if current_lang=='fr' else 'معلومات عامة' }}</h3>
+            <dl class="detail-list">
+                <div><dt>{{ 'Service' if current_lang=='fr' else 'الخدمة' }}</dt><dd>{{ service_request.service.name_fr if current_lang=='fr' else service_request.service.name_ar }}</dd></div>
+                {% if not public_view %}<div><dt>{{ 'Demandeur' if current_lang=='fr' else 'مقدم الطلب' }}</dt><dd>{{ service_request.citizen.user.full_name }}</dd></div>{% endif %}
+                <div><dt>{{ 'Date de dépôt' if current_lang=='fr' else 'تاريخ الإيداع' }}</dt><dd>{{ service_request.created_at.strftime('%d/%m/%Y à %H:%M') }}</dd></div>
+                <div><dt>{{ 'Dernière mise à jour' if current_lang=='fr' else 'آخر تحديث' }}</dt><dd>{{ service_request.updated_at.strftime('%d/%m/%Y à %H:%M') }}</dd></div>
+                {% if service_request.employee and not public_view %}<div><dt>{{ 'Employé affecté' if current_lang=='fr' else 'الموظف المكلف' }}</dt><dd>{{ service_request.employee.user.full_name }}</dd></div>{% endif %}
+                {% if service_request.notes and not public_view %}<div><dt>{{ 'Description' if current_lang=='fr' else 'الوصف' }}</dt><dd>{{ service_request.notes }}</dd></div>{% endif %}
+            </dl>
+            {% if not public_view %}
+            <a href="{{ url_for('request_pdf', request_id=service_request.id) }}" class="btn btn-outline-custom"><i class="bi bi-file-earmark-pdf"></i> {{ 'Télécharger le récépissé PDF' if current_lang=='fr' else 'تحميل الوصل PDF' }}</a>
+            {% endif %}
+        </div>
+
+        {% if not public_view %}
+        <div class="content-card">
+            <h3><i class="bi bi-paperclip"></i> {{ 'Pièces jointes' if current_lang=='fr' else 'المرفقات' }}</h3>
+            <ul class="attachment-list">
+                {% for doc in service_request.documents %}
+                <li>
+                    <i class="bi bi-file-earmark-text"></i>
+                    <a href="{{ url_for('static', filename='uploads/' ~ doc.filename) }}" target="_blank">{{ doc.original_filename }}</a>
+                    <span class="text-muted-custom">{{ doc.uploaded_at.strftime('%d/%m/%Y') }}</span>
+                </li>
+                {% else %}
+                <li class="text-muted-custom">{{ 'Aucune pièce jointe.' if current_lang=='fr' else 'لا توجد مرفقات.' }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% if current_user.has_role('employee', 'admin') %}
+        <div class="content-card">
+            <h3><i class="bi bi-arrow-repeat"></i> {{ 'Mettre à jour le statut' if current_lang=='fr' else 'تحديث الحالة' }}</h3>
+            <form method="post" action="{{ url_for('update_request_status', request_id=service_request.id) }}">
+                {{ status_form.hidden_tag() }}
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        {{ status_form.status(class='form-select') }}
+                    </div>
+                    <div class="col-md-7">
+                        {{ status_form.comment(class='form-control', placeholder='Commentaire visible par le citoyen (optionnel)') }}
+                    </div>
+                </div>
+                {{ status_form.submit(class='btn btn-primary-custom mt-3') }}
+            </form>
+
+            {% if not service_request.employee_id %}
+            <hr>
+            <h4>{{ 'Affecter à un employé' if current_lang=='fr' else 'إسناد إلى موظف' }}</h4>
+            <form method="post" action="{{ url_for('assign_request', request_id=service_request.id) }}" class="d-flex gap-2">
+                {{ assign_form.hidden_tag() }}
+                {{ assign_form.employee_id(class='form-select') }}
+                {{ assign_form.submit(class='btn btn-outline-custom') }}
+            </form>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="content-card">
+            <h3><i class="bi bi-chat-left-text"></i> {{ 'Commentaires' if current_lang=='fr' else 'التعليقات' }}</h3>
+            <div class="comment-list">
+                {% for c in service_request.comments %}
+                <div class="comment-item">
+                    <div class="comment-avatar"><i class="bi bi-person-fill"></i></div>
+                    <div>
+                        <strong>{{ c.author.full_name }}</strong>
+                        <span class="text-muted-custom">{{ c.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                        <p>{{ c.comment }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted-custom">{{ 'Aucun commentaire pour le moment.' if current_lang=='fr' else 'لا توجد تعليقات حاليا.' }}</p>
+                {% endfor %}
+            </div>
+            <form method="post" action="{{ url_for('add_request_comment', request_id=service_request.id) }}" class="mt-3">
+                {{ comment_form.hidden_tag() }}
+                {{ comment_form.comment(class='form-control', rows=2, placeholder='Ajouter un commentaire…') }}
+                {{ comment_form.submit(class='btn btn-primary-custom mt-2') }}
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="request-detail-side">
+        {% if service_request.qr_code %}
+        <div class="content-card text-center">
+            <h4>{{ 'QR Code de suivi' if current_lang=='fr' else 'رمز QR للتتبع' }}</h4>
+            <img src="{{ url_for('static', filename='uploads/' ~ service_request.qr_code) }}" alt="QR Code" class="qr-code-image">
+            <p class="text-muted-custom">{{ 'Scannez pour suivre cette demande' if current_lang=='fr' else 'امسحوا الرمز لتتبع هذا الطلب' }}</p>
+        </div>
+        {% endif %}
+
+        <div class="content-card">
+            <h4><i class="bi bi-clock-history"></i> {{ 'Historique' if current_lang=='fr' else 'السجل' }}</h4>
+            <ul class="timeline">
+                {% for h in service_request.history %}
+                <li class="timeline-item">
+                    <span class="timeline-dot badge-{{ service_request.status_css() }}"></span>
+                    <div>
+                        <strong>{{ h.status }}</strong>
+                        {% if h.comment %}<p>{{ h.comment }}</p>{% endif %}
+                        <span class="text-muted-custom">{{ h.created_at.strftime('%d/%m/%Y %H:%M') }}{% if h.changed_by %} · {{ h.changed_by.full_name }}{% endif %}</span>
+                    </div>
+                </li>
+                {% else %}
+                <li class="text-muted-custom">{{ 'Aucun historique disponible.' if current_lang=='fr' else 'لا يوجد سجل متاح.' }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

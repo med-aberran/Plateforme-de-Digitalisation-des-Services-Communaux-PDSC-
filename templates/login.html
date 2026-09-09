@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Connexion' if current_lang=='fr' else 'تسجيل الدخول' }}{% endblock %}
+{% block content %}
+<section class="auth-section">
+    <div class="auth-card">
+        <div class="auth-visual">
+            <div class="auth-visual-pattern"></div>
+            <span class="brand-emblem large"><img src="{{ url_for('static', filename='images/logo-commune.png') }}" alt="{{ commune_name_fr if current_lang=='fr' else commune_name_ar }}"></span>
+            <h2>{{ commune_name_fr if current_lang == 'fr' else commune_name_ar }}</h2>
+            <p>{{ 'Vos démarches administratives, simplifiées et accessibles 24h/24.' if current_lang=='fr' else 'إجراءاتكم الإدارية، مبسطة ومتاحة على مدار الساعة.' }}</p>
+        </div>
+        <div class="auth-form-wrap">
+            {% if show_reset %}
+            <h1 class="auth-title">{{ 'Nouveau mot de passe' if current_lang=='fr' else 'كلمة مرور جديدة' }}</h1>
+            <form method="post" action="{{ url_for('reset_password', token=reset_token) }}" novalidate>
+                {{ reset_form.hidden_tag() }}
+                <div class="form-floating mb-3">
+                    {{ reset_form.password(class='form-control', placeholder='Mot de passe') }}
+                    <label>{{ reset_form.password.label.text }}</label>
+                </div>
+                <div class="form-floating mb-3">
+                    {{ reset_form.confirm_password(class='form-control', placeholder='Confirmer') }}
+                    <label>{{ reset_form.confirm_password.label.text }}</label>
+                </div>
+                {{ reset_form.submit(class='btn btn-primary-custom w-100') }}
+            </form>
+
+            {% elif show_forgot %}
+            <h1 class="auth-title">{{ 'Mot de passe oublié' if current_lang=='fr' else 'نسيت كلمة المرور' }}</h1>
+            <p class="auth-subtitle">{{ 'Recevez un lien de réinitialisation par e-mail.' if current_lang=='fr' else 'استلم رابط إعادة التعيين عبر البريد الإلكتروني.' }}</p>
+            <form method="post" action="{{ url_for('forgot_password') }}" novalidate>
+                {{ forgot_form.hidden_tag() }}
+                <div class="form-floating mb-3">
+                    {{ forgot_form.email(class='form-control', placeholder='Email') }}
+                    <label>{{ forgot_form.email.label.text }}</label>
+                </div>
+                {{ forgot_form.submit(class='btn btn-primary-custom w-100') }}
+            </form>
+            <p class="auth-switch"><a href="{{ url_for('login') }}"><i class="bi bi-arrow-{{ 'left' if current_lang=='ar' else 'right' }}"></i> {{ 'Retour à la connexion' if current_lang=='fr' else 'العودة لتسجيل الدخول' }}</a></p>
+
+            {% else %}
+            <h1 class="auth-title">{{ 'Connexion' if current_lang=='fr' else 'تسجيل الدخول' }}</h1>
+            <p class="auth-subtitle">{{ 'Accédez à votre espace personnel.' if current_lang=='fr' else 'الدخول إلى فضائكم الشخصي.' }}</p>
+            <form method="post" action="{{ url_for('login') }}" novalidate class="needs-validation" data-validate>
+                {{ form.hidden_tag() }}
+                <div class="form-floating mb-3">
+                    {{ form.email(class='form-control', placeholder='Email', autofocus=true) }}
+                    <label>{{ form.email.label.text }}</label>
+                </div>
+                <div class="form-floating mb-3 password-field">
+                    {{ form.password(class='form-control', placeholder='Mot de passe') }}
+                    <label>{{ form.password.label.text }}</label>
+                    <button type="button" class="password-toggle" tabindex="-1"><i class="bi bi-eye"></i></button>
+                </div>
+                <div class="form-check-row">
+                    <div class="form-check">
+                        {{ form.remember_me(class='form-check-input') }}
+                        {{ form.remember_me.label(class='form-check-label') }}
+                    </div>
+                    <a href="{{ url_for('forgot_password') }}" class="forgot-link">{{ 'Mot de passe oublié ?' if current_lang=='fr' else 'نسيت كلمة المرور؟' }}</a>
+                </div>
+                {{ form.submit(class='btn btn-primary-custom w-100') }}
+            </form>
+            <p class="auth-switch">{{ "Pas encore de compte ?" if current_lang=='fr' else 'ليس لديك حساب؟' }} <a href="{{ url_for('register') }}">{{ "Créer un compte" if current_lang=='fr' else 'إنشاء حساب' }}</a></p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

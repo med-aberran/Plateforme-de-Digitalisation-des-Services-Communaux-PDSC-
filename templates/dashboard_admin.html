@@ -1,0 +1,664 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Administration' if current_lang=='fr' else 'الإدارة' }}{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1>{{ 'Administration' if current_lang=='fr' else 'الإدارة' }}</h1>
+        <p>{{ 'Gérez l\'ensemble de la plateforme depuis cet espace.' if current_lang=='fr' else 'أدروا المنصة بأكملها من هذا الفضاء.' }}</p>
+    </div>
+</div>
+
+<div class="kpi-grid kpi-grid-admin">
+    <div class="kpi-card kpi-primary"><i class="bi bi-people"></i><div><span class="kpi-number">{{ stats.total_users }}</span><span class="kpi-label">{{ 'Utilisateurs' if current_lang=='fr' else 'المستخدمون' }}</span></div></div>
+    <div class="kpi-card kpi-info"><i class="bi bi-person-badge"></i><div><span class="kpi-number">{{ stats.total_citizens }}</span><span class="kpi-label">{{ 'Citoyens' if current_lang=='fr' else 'المواطنون' }}</span></div></div>
+    <div class="kpi-card kpi-info"><i class="bi bi-briefcase"></i><div><span class="kpi-number">{{ stats.total_employees }}</span><span class="kpi-label">{{ 'Employés' if current_lang=='fr' else 'الموظفون' }}</span></div></div>
+    <div class="kpi-card kpi-warning"><i class="bi bi-hourglass-split"></i><div><span class="kpi-number">{{ stats.pending_requests }}</span><span class="kpi-label">{{ 'Demandes en cours' if current_lang=='fr' else 'طلبات قيد المعالجة' }}</span></div></div>
+    <div class="kpi-card kpi-success"><i class="bi bi-file-earmark-text"></i><div><span class="kpi-number">{{ stats.total_requests }}</span><span class="kpi-label">{{ 'Demandes totales' if current_lang=='fr' else 'إجمالي الطلبات' }}</span></div></div>
+    <div class="kpi-card kpi-danger"><i class="bi bi-megaphone"></i><div><span class="kpi-number">{{ stats.open_complaints }}</span><span class="kpi-label">{{ 'Réclamations ouvertes' if current_lang=='fr' else 'شكايات مفتوحة' }}</span></div></div>
+</div>
+
+<div class="content-card admin-tabs-card">
+    <ul class="nav nav-tabs admin-tabs" id="adminTabs" role="tablist">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#utilisateurs" type="button"><i class="bi bi-people"></i> {{ 'Utilisateurs' if current_lang=='fr' else 'المستخدمون' }}</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#departements" type="button"><i class="bi bi-diagram-3"></i> {{ 'Départements' if current_lang=='fr' else 'الأقسام' }}</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#services" type="button"><i class="bi bi-briefcase"></i> {{ 'Services' if current_lang=='fr' else 'الخدمات' }}</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#actualites" type="button"><i class="bi bi-newspaper"></i> {{ 'Actualités' if current_lang=='fr' else 'الأخبار' }}</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#documents" type="button"><i class="bi bi-folder2-open"></i> {{ 'Documents' if current_lang=='fr' else 'الوثائق' }}</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#plans" type="button"><i class="bi bi-map"></i> {{ 'Plans' if current_lang=='fr' else 'التصاميم' }}</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#galerie" type="button"><i class="bi bi-images"></i> {{ 'Galerie' if current_lang=='fr' else 'المعرض' }}</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#videos" type="button"><i class="bi bi-play-circle"></i> {{ 'Vidéos' if current_lang=='fr' else 'الفيديوهات' }}</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#parametres" type="button"><i class="bi bi-gear"></i> {{ 'Paramètres' if current_lang=='fr' else 'الإعدادات' }}</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#journal" type="button"><i class="bi bi-clock-history"></i> {{ 'Journal' if current_lang=='fr' else 'السجل' }}</button></li>
+    </ul>
+
+    <div class="tab-content admin-tab-content">
+        <!-- ============================= UTILISATEURS ============================= -->
+        <div class="tab-pane fade show active" id="utilisateurs">
+            <div class="table-toolbar">
+                <h3>{{ 'Gestion des utilisateurs' if current_lang=='fr' else 'إدارة المستخدمين' }}</h3>
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#userCreateModal"><i class="bi bi-plus-lg"></i> {{ 'Ajouter' if current_lang=='fr' else 'إضافة' }}</button>
+            </div>
+            <div class="table-responsive-custom">
+                <table class="table-custom">
+                    <thead><tr>
+                        <th>{{ 'Nom' if current_lang=='fr' else 'الاسم' }}</th><th>Email</th>
+                        <th>{{ 'Rôle' if current_lang=='fr' else 'الدور' }}</th><th>{{ 'Statut' if current_lang=='fr' else 'الحالة' }}</th><th></th>
+                    </tr></thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td>{{ u.full_name }}</td>
+                            <td>{{ u.email }}</td>
+                            <td><span class="badge-role badge-{{ u.role.name }}">{{ u.role.label_fr if current_lang=='fr' else u.role.label_ar }}</span></td>
+                            <td>
+                                <form method="post" action="{{ url_for('admin_user_toggle_active', user_id=u.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="badge-toggle {{ 'active' if u.is_active_account else 'inactive' }}">{{ ('Actif' if current_lang=='fr' else 'نشط') if u.is_active_account else ('Inactif' if current_lang=='fr' else 'غير نشط') }}</button>
+                                </form>
+                            </td>
+                            <td class="text-end row-actions">
+                                <button type="button" class="btn-icon" data-bs-toggle="modal" data-bs-target="#userEditModal"
+                                    data-action="{{ url_for('admin_user_edit', user_id=u.id) }}"
+                                    data-first-name="{{ u.first_name }}" data-last-name="{{ u.last_name }}"
+                                    data-email="{{ u.email }}" data-phone="{{ u.phone or '' }}"
+                                    data-role-id="{{ u.role_id }}"
+                                    data-department-id="{{ u.employee_profile.department_id if u.employee_profile and u.employee_profile.department_id else '' }}"
+                                    data-active="{{ 'on' if u.is_active_account else '' }}"><i class="bi bi-pencil"></i></button>
+                                <form method="post" action="{{ url_for('admin_user_delete', user_id=u.id) }}" class="d-inline" data-confirm="{{ 'Supprimer cet utilisateur ?' if current_lang=='fr' else 'حذف هذا المستخدم؟' }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn-icon text-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5"><p class="empty-state">{{ 'Aucun utilisateur.' if current_lang=='fr' else 'لا يوجد مستخدمون.' }}</p></td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================= DEPARTEMENTS ============================= -->
+        <div class="tab-pane fade" id="departements">
+            <div class="table-toolbar">
+                <h3>{{ 'Départements' if current_lang=='fr' else 'الأقسام' }}</h3>
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#deptCreateModal"><i class="bi bi-plus-lg"></i> {{ 'Ajouter' if current_lang=='fr' else 'إضافة' }}</button>
+            </div>
+            <div class="table-responsive-custom">
+                <table class="table-custom">
+                    <thead><tr><th>{{ 'Nom (FR)' if current_lang=='fr' else 'الاسم (فرنسية)' }}</th><th>{{ 'Nom (AR)' if current_lang=='fr' else 'الاسم (عربية)' }}</th><th></th></tr></thead>
+                    <tbody>
+                        {% for d in departments %}
+                        <tr>
+                            <td>{{ d.name_fr }}</td>
+                            <td>{{ d.name_ar }}</td>
+                            <td class="text-end row-actions">
+                                <button type="button" class="btn-icon" data-bs-toggle="modal" data-bs-target="#deptEditModal"
+                                    data-action="{{ url_for('admin_department_edit', department_id=d.id) }}"
+                                    data-name-fr="{{ d.name_fr }}" data-name-ar="{{ d.name_ar }}"
+                                    data-desc-fr="{{ d.description_fr or '' }}" data-desc-ar="{{ d.description_ar or '' }}"><i class="bi bi-pencil"></i></button>
+                                <form method="post" action="{{ url_for('admin_department_delete', department_id=d.id) }}" class="d-inline" data-confirm="{{ 'Supprimer ce département ?' if current_lang=='fr' else 'حذف هذا القسم؟' }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn-icon text-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3"><p class="empty-state">{{ 'Aucun département.' if current_lang=='fr' else 'لا توجد أقسام.' }}</p></td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================= SERVICES ============================= -->
+        <div class="tab-pane fade" id="services">
+            <div class="table-toolbar">
+                <h3>{{ 'Services' if current_lang=='fr' else 'الخدمات' }}</h3>
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#serviceCreateModal"><i class="bi bi-plus-lg"></i> {{ 'Ajouter' if current_lang=='fr' else 'إضافة' }}</button>
+            </div>
+            <div class="table-responsive-custom">
+                <table class="table-custom">
+                    <thead><tr><th></th><th>{{ 'Nom' if current_lang=='fr' else 'الاسم' }}</th><th>{{ 'Département' if current_lang=='fr' else 'القسم' }}</th><th>{{ 'Actif' if current_lang=='fr' else 'نشط' }}</th><th></th></tr></thead>
+                    <tbody>
+                        {% for s in services %}
+                        <tr>
+                            <td><i class="bi {{ s.icon }}"></i></td>
+                            <td>{{ s.name_fr }}</td>
+                            <td>{{ s.department.name_fr if s.department else '-' }}</td>
+                            <td>{% if s.active %}<span class="dot-success"></span>{% else %}<span class="dot-muted"></span>{% endif %}</td>
+                            <td class="text-end row-actions">
+                                <a href="{{ url_for('service_detail', slug=s.slug) }}" target="_blank" class="btn-icon"><i class="bi bi-box-arrow-up-right"></i></a>
+                                <button type="button" class="btn-icon" data-bs-toggle="modal" data-bs-target="#serviceEditModal"
+                                    data-action="{{ url_for('admin_service_edit', service_id=s.id) }}"
+                                    data-name-fr="{{ s.name_fr }}" data-name-ar="{{ s.name_ar }}"
+                                    data-desc-fr="{{ s.description_fr or '' }}" data-desc-ar="{{ s.description_ar or '' }}"
+                                    data-icon="{{ s.icon }}" data-order="{{ s.order }}" data-department-id="{{ s.department_id or '' }}"
+                                    data-active="{{ 'on' if s.active else '' }}"><i class="bi bi-pencil"></i></button>
+                                <form method="post" action="{{ url_for('admin_service_delete', service_id=s.id) }}" class="d-inline" data-confirm="{{ 'Supprimer ce service ?' if current_lang=='fr' else 'حذف هذه الخدمة؟' }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn-icon text-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="5"><p class="empty-state">{{ 'Aucun service.' if current_lang=='fr' else 'لا توجد خدمات.' }}</p></td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================= ACTUALITES ============================= -->
+        <div class="tab-pane fade" id="actualites">
+            <div class="table-toolbar">
+                <h3>{{ 'Actualités' if current_lang=='fr' else 'الأخبار' }}</h3>
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#newsCreateModal"><i class="bi bi-plus-lg"></i> {{ 'Publier' if current_lang=='fr' else 'نشر' }}</button>
+            </div>
+            <div class="table-responsive-custom">
+                <table class="table-custom">
+                    <thead><tr><th>{{ 'Titre' if current_lang=='fr' else 'العنوان' }}</th><th>{{ 'Date' if current_lang=='fr' else 'التاريخ' }}</th><th>{{ 'Statut' if current_lang=='fr' else 'الحالة' }}</th><th></th></tr></thead>
+                    <tbody>
+                        {% for n in news_items %}
+                        <tr>
+                            <td>{{ n.title_fr }}</td>
+                            <td>{{ n.published_at.strftime('%d/%m/%Y') }}</td>
+                            <td>{% if n.active %}<span class="dot-success"></span> {{ 'Publiée' if current_lang=='fr' else 'منشورة' }}{% else %}<span class="dot-muted"></span> {{ 'Brouillon' if current_lang=='fr' else 'مسودة' }}{% endif %}</td>
+                            <td class="text-end row-actions">
+                                <a href="{{ url_for('news_detail', news_id=n.id) }}" target="_blank" class="btn-icon"><i class="bi bi-box-arrow-up-right"></i></a>
+                                <button type="button" class="btn-icon" data-bs-toggle="modal" data-bs-target="#newsEditModal"
+                                    data-action="{{ url_for('admin_news_edit', news_id=n.id) }}"
+                                    data-title-fr="{{ n.title_fr }}" data-title-ar="{{ n.title_ar }}"
+                                    data-content-fr="{{ n.content_fr }}" data-content-ar="{{ n.content_ar }}"
+                                    data-active="{{ 'on' if n.active else '' }}"><i class="bi bi-pencil"></i></button>
+                                <form method="post" action="{{ url_for('admin_news_delete', news_id=n.id) }}" class="d-inline" data-confirm="{{ 'Supprimer cette actualité ?' if current_lang=='fr' else 'حذف هذا الخبر؟' }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn-icon text-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4"><p class="empty-state">{{ 'Aucune actualité.' if current_lang=='fr' else 'لا توجد أخبار.' }}</p></td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================= DOCUMENTS ============================= -->
+        <div class="tab-pane fade" id="documents">
+            <div class="table-toolbar">
+                <h3>{{ 'Documents publics' if current_lang=='fr' else 'الوثائق العمومية' }}</h3>
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#docCreateModal"><i class="bi bi-plus-lg"></i> {{ 'Ajouter' if current_lang=='fr' else 'إضافة' }}</button>
+            </div>
+            <div class="document-search-input admin-table-search mb-3">
+                <i class="bi bi-search"></i>
+                <input type="text" id="documentsSearchInput" data-table-search="documentsTable" placeholder="{{ 'Rechercher par titre, service, référence…' if current_lang=='fr' else 'البحث بالعنوان أو الخدمة أو المرجع…' }}">
+            </div>
+            <div class="table-responsive-custom">
+                <table class="table-custom" id="documentsTable">
+                    <thead><tr>
+                        <th>{{ 'Titre' if current_lang=='fr' else 'العنوان' }}</th>
+                        <th>{{ 'Service' if current_lang=='fr' else 'الخدمة' }}</th>
+                        <th>{{ 'Référence' if current_lang=='fr' else 'المرجع' }}</th>
+                        <th>{{ 'Catégorie' if current_lang=='fr' else 'الفئة' }}</th>
+                        <th>{{ 'Date' if current_lang=='fr' else 'التاريخ' }}</th><th></th>
+                    </tr></thead>
+                    <tbody>
+                        {% for d in documents %}
+                        <tr data-search="{{ (d.title_fr ~ ' ' ~ d.title_ar ~ ' ' ~ (d.service.name_fr if d.service else '') ~ ' ' ~ (d.reference or ''))|lower }}">
+                            <td>{{ d.title_fr }}</td>
+                            <td>{{ d.service.name_fr if d.service else '-' }}</td>
+                            <td class="mono">{{ d.reference or '-' }}</td>
+                            <td><span class="badge-status badge-secondary">{{ d.category }}</span></td>
+                            <td>{{ d.uploaded_at.strftime('%d/%m/%Y') }}</td>
+                            <td class="text-end row-actions">
+                                <a href="{{ url_for('static', filename='uploads/' ~ d.file_path) }}" target="_blank" class="btn-icon"><i class="bi bi-eye"></i></a>
+                                <button type="button" class="btn-icon" data-bs-toggle="modal" data-bs-target="#docEditModal"
+                                    data-action="{{ url_for('admin_document_edit', document_id=d.id) }}"
+                                    data-title-fr="{{ d.title_fr }}" data-title-ar="{{ d.title_ar }}"
+                                    data-reference="{{ d.reference or '' }}" data-category="{{ d.category }}"
+                                    data-service-id="{{ d.service_id or '' }}"><i class="bi bi-pencil"></i></button>
+                                <form method="post" action="{{ url_for('admin_document_delete', document_id=d.id) }}" class="d-inline" data-confirm="{{ 'Supprimer ce document ?' if current_lang=='fr' else 'حذف هذه الوثيقة؟' }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn-icon text-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6"><p class="empty-state">{{ 'Aucun document.' if current_lang=='fr' else 'لا توجد وثائق.' }}</p></td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================= PLANS D'AMENAGEMENT ============================= -->
+        <div class="tab-pane fade" id="plans">
+            <div class="table-toolbar">
+                <h3>{{ "Plans d'aménagement" if current_lang=='fr' else 'التصاميم الترابية' }}</h3>
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#planCreateModal"><i class="bi bi-plus-lg"></i> {{ 'Ajouter' if current_lang=='fr' else 'إضافة' }}</button>
+            </div>
+            <div class="table-responsive-custom">
+                <table class="table-custom">
+                    <thead><tr><th>{{ 'Titre' if current_lang=='fr' else 'العنوان' }}</th><th>{{ 'Affiché sur le site' if current_lang=='fr' else 'معروض في الموقع' }}</th><th></th></tr></thead>
+                    <tbody>
+                        {% for p in urban_plans %}
+                        <tr>
+                            <td>{{ p.title_fr }}</td>
+                            <td>
+                                {% if p.active %}<span class="dot-success"></span> {{ 'Oui' if current_lang=='fr' else 'نعم' }}
+                                {% else %}
+                                <form method="post" action="{{ url_for('admin_urban_plan_activate', plan_id=p.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-custom">{{ 'Activer' if current_lang=='fr' else 'تفعيل' }}</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                            <td class="text-end row-actions">
+                                <a href="{{ url_for('static', filename='uploads/' ~ p.file_path) }}" target="_blank" class="btn-icon"><i class="bi bi-eye"></i></a>
+                                <form method="post" action="{{ url_for('admin_urban_plan_delete', plan_id=p.id) }}" class="d-inline" data-confirm="{{ 'Supprimer ce plan ?' if current_lang=='fr' else 'حذف هذا التصميم؟' }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn-icon text-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3"><p class="empty-state">{{ 'Aucun plan.' if current_lang=='fr' else 'لا توجد تصاميم.' }}</p></td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================= GALERIE ============================= -->
+        <div class="tab-pane fade" id="galerie">
+            <div class="table-toolbar">
+                <h3>{{ 'Galerie photo' if current_lang=='fr' else 'معرض الصور' }}</h3>
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#galleryCreateModal"><i class="bi bi-plus-lg"></i> {{ 'Ajouter' if current_lang=='fr' else 'إضافة' }}</button>
+            </div>
+            <div class="admin-gallery-grid">
+                {% for img in gallery_images %}
+                <div class="admin-gallery-item">
+                    <img src="{{ url_for('static', filename='uploads/' ~ img.image_path) }}" alt="{{ img.title_fr }}">
+                    <form method="post" action="{{ url_for('admin_gallery_delete', image_id=img.id) }}" data-confirm="{{ 'Supprimer cette image ?' if current_lang=='fr' else 'حذف هذه الصورة؟' }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit"><i class="bi bi-trash"></i></button>
+                    </form>
+                </div>
+                {% else %}
+                <p class="empty-state">{{ 'Aucune image.' if current_lang=='fr' else 'لا توجد صور.' }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ============================= VIDEOS ============================= -->
+        <div class="tab-pane fade" id="videos">
+            <div class="table-toolbar">
+                <h3>{{ 'Vidéos' if current_lang=='fr' else 'الفيديوهات' }}</h3>
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#videoCreateModal"><i class="bi bi-plus-lg"></i> {{ 'Ajouter' if current_lang=='fr' else 'إضافة' }}</button>
+            </div>
+            <div class="table-responsive-custom">
+                <table class="table-custom">
+                    <thead><tr><th>{{ 'Titre' if current_lang=='fr' else 'العنوان' }}</th><th>URL</th><th></th></tr></thead>
+                    <tbody>
+                        {% for v in videos %}
+                        <tr>
+                            <td>{{ v.title_fr }}</td>
+                            <td class="mono">{{ v.url | truncate(40) }}</td>
+                            <td class="text-end row-actions">
+                                <form method="post" action="{{ url_for('admin_video_delete', video_id=v.id) }}" class="d-inline" data-confirm="{{ 'Supprimer cette vidéo ?' if current_lang=='fr' else 'حذف هذا الفيديو؟' }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn-icon text-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3"><p class="empty-state">{{ 'Aucune vidéo.' if current_lang=='fr' else 'لا توجد فيديوهات.' }}</p></td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================= PARAMETRES ============================= -->
+        <div class="tab-pane fade" id="parametres">
+            <h3>{{ 'Paramètres du site' if current_lang=='fr' else 'إعدادات الموقع' }}</h3>
+            <div class="settings-list">
+                {% for key, label_fr, label_ar in [('commune_phone','Téléphone','الهاتف'),('commune_email','E-mail','البريد الإلكتروني'),('commune_address','Adresse','العنوان'),('facebook_url','Facebook URL','رابط فيسبوك'),('twitter_url','Twitter URL','رابط تويتر')] %}
+                {% set existing = settings | selectattr('key','equalto', key) | first %}
+                <form method="post" action="{{ url_for('admin_setting_update', key=key) }}" class="settings-row">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <label>{{ label_fr if current_lang=='fr' else label_ar }}</label>
+                    <input type="text" name="value" class="form-control" value="{{ existing.value if existing else '' }}">
+                    <button type="submit" class="btn btn-sm btn-outline-custom">{{ 'Enregistrer' if current_lang=='fr' else 'حفظ' }}</button>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ============================= JOURNAL DES ACTIONS ============================= -->
+        <div class="tab-pane fade" id="journal">
+            <h3>{{ 'Journal des actions' if current_lang=='fr' else 'سجل الأنشطة' }}</h3>
+            <div class="table-responsive-custom">
+                <table class="table-custom">
+                    <thead><tr><th>{{ 'Utilisateur' if current_lang=='fr' else 'المستخدم' }}</th><th>{{ 'Action' if current_lang=='fr' else 'الإجراء' }}</th><th>{{ 'Détails' if current_lang=='fr' else 'التفاصيل' }}</th><th>{{ 'Date' if current_lang=='fr' else 'التاريخ' }}</th></tr></thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{ log.user.full_name if log.user else '-' }}</td>
+                            <td>{{ log.action }}</td>
+                            <td>{{ log.details or '-' }}</td>
+                            <td>{{ log.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4"><p class="empty-state">{{ 'Aucune entrée dans le journal.' if current_lang=='fr' else 'لا توجد إدخالات في السجل.' }}</p></td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================= MODALS : UTILISATEURS ============================= -->
+<div class="modal fade" id="userCreateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('admin_user_create') }}">
+                {{ user_form.hidden_tag() }}
+                <div class="modal-header"><h5 class="modal-title">{{ 'Ajouter un utilisateur' if current_lang=='fr' else 'إضافة مستخدم' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">{{ user_form.first_name.label.text }}</label>{{ user_form.first_name(class='form-control', id='c_first_name') }}</div>
+                        <div class="col-md-6"><label class="form-label">{{ user_form.last_name.label.text }}</label>{{ user_form.last_name(class='form-control', id='c_last_name') }}</div>
+                        <div class="col-md-6"><label class="form-label">{{ user_form.email.label.text }}</label>{{ user_form.email(class='form-control', id='c_email') }}</div>
+                        <div class="col-md-6"><label class="form-label">{{ user_form.phone.label.text }}</label>{{ user_form.phone(class='form-control', id='c_phone') }}</div>
+                        <div class="col-md-6"><label class="form-label">{{ user_form.role_id.label.text }}</label>{{ user_form.role_id(class='form-select', id='c_role_id') }}</div>
+                        <div class="col-md-6"><label class="form-label">{{ user_form.department_id.label.text }}</label>{{ user_form.department_id(class='form-select', id='c_department_id') }}</div>
+                        <div class="col-md-6"><label class="form-label">{{ user_form.password.label.text }}</label>{{ user_form.password(class='form-control', id='c_password') }}</div>
+                        <div class="col-md-6 d-flex align-items-end"><div class="form-check">{{ user_form.is_active_account(class='form-check-input', id='c_is_active') }}{{ user_form.is_active_account.label(class='form-check-label') }}</div></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>{{ user_form.submit(class='btn btn-primary-custom') }}</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="userEditModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" id="userEditForm" action="">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-header"><h5 class="modal-title">{{ 'Modifier l\'utilisateur' if current_lang=='fr' else 'تعديل المستخدم' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">{{ 'Prénom' if current_lang=='fr' else 'الاسم الشخصي' }}</label><input type="text" name="first_name" id="e_first_name" class="form-control" required></div>
+                        <div class="col-md-6"><label class="form-label">{{ 'Nom' if current_lang=='fr' else 'الاسم العائلي' }}</label><input type="text" name="last_name" id="e_last_name" class="form-control" required></div>
+                        <div class="col-md-6"><label class="form-label">Email</label><input type="email" name="email" id="e_email" class="form-control" required></div>
+                        <div class="col-md-6"><label class="form-label">{{ 'Téléphone' if current_lang=='fr' else 'الهاتف' }}</label><input type="text" name="phone" id="e_phone" class="form-control"></div>
+                        <div class="col-md-6"><label class="form-label">{{ 'Rôle' if current_lang=='fr' else 'الدور' }}</label>
+                            <select name="role_id" id="e_role_id" class="form-select">{% for r in roles %}<option value="{{ r.id }}">{{ r.label_fr if current_lang=='fr' else r.label_ar }}</option>{% endfor %}</select>
+                        </div>
+                        <div class="col-md-6"><label class="form-label">{{ 'Département' if current_lang=='fr' else 'القسم' }}</label>
+                            <select name="department_id" id="e_department_id" class="form-select"><option value="0">-</option>{% for d in departments %}<option value="{{ d.id }}">{{ d.name_fr }}</option>{% endfor %}</select>
+                        </div>
+                        <div class="col-md-6"><label class="form-label">{{ 'Nouveau mot de passe' if current_lang=='fr' else 'كلمة مرور جديدة' }}</label><input type="password" name="password" id="e_password" class="form-control"></div>
+                        <div class="col-md-6 d-flex align-items-end"><div class="form-check"><input type="checkbox" name="is_active_account" id="e_is_active" class="form-check-input"><label class="form-check-label" for="e_is_active">{{ 'Compte actif' if current_lang=='fr' else 'حساب نشط' }}</label></div></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button><button type="submit" class="btn btn-primary-custom">{{ 'Enregistrer' if current_lang=='fr' else 'حفظ' }}</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ============================= MODALS : DEPARTEMENTS ============================= -->
+<div class="modal fade" id="deptCreateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('admin_department_create') }}">
+                {{ department_form.hidden_tag() }}
+                <div class="modal-header"><h5 class="modal-title">{{ 'Ajouter un département' if current_lang=='fr' else 'إضافة قسم' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">{{ department_form.name_fr.label.text }}</label>{{ department_form.name_fr(class='form-control', id='c_dept_name_fr') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ department_form.name_ar.label.text }}</label>{{ department_form.name_ar(class='form-control', id='c_dept_name_ar') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ department_form.description_fr.label.text }}</label>{{ department_form.description_fr(class='form-control', id='c_dept_desc_fr', rows=2) }}</div>
+                    <div class="mb-3"><label class="form-label">{{ department_form.description_ar.label.text }}</label>{{ department_form.description_ar(class='form-control', id='c_dept_desc_ar', rows=2) }}</div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>{{ department_form.submit(class='btn btn-primary-custom') }}</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deptEditModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" id="deptEditForm" action="">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-header"><h5 class="modal-title">{{ 'Modifier le département' if current_lang=='fr' else 'تعديل القسم' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">{{ 'Nom (Français)' if current_lang=='fr' else 'الاسم (فرنسية)' }}</label><input type="text" name="name_fr" id="e_dept_name_fr" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label">{{ 'Nom (Arabe)' if current_lang=='fr' else 'الاسم (عربية)' }}</label><input type="text" name="name_ar" id="e_dept_name_ar" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label">{{ 'Description (Français)' if current_lang=='fr' else 'الوصف (فرنسية)' }}</label><textarea name="description_fr" id="e_dept_desc_fr" class="form-control" rows="2"></textarea></div>
+                    <div class="mb-3"><label class="form-label">{{ 'Description (Arabe)' if current_lang=='fr' else 'الوصف (عربية)' }}</label><textarea name="description_ar" id="e_dept_desc_ar" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button><button type="submit" class="btn btn-primary-custom">{{ 'Enregistrer' if current_lang=='fr' else 'حفظ' }}</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ============================= MODALS : SERVICES ============================= -->
+<div class="modal fade" id="serviceCreateModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('admin_service_create') }}" enctype="multipart/form-data">
+                {{ service_form.hidden_tag() }}
+                <div class="modal-header"><h5 class="modal-title">{{ 'Ajouter un service' if current_lang=='fr' else 'إضافة خدمة' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">{{ service_form.name_fr.label.text }}</label>{{ service_form.name_fr(class='form-control', id='c_svc_name_fr') }}</div>
+                        <div class="col-md-6"><label class="form-label">{{ service_form.name_ar.label.text }}</label>{{ service_form.name_ar(class='form-control', id='c_svc_name_ar') }}</div>
+                        <div class="col-12"><label class="form-label">{{ service_form.description_fr.label.text }}</label>{{ service_form.description_fr(class='form-control', id='c_svc_desc_fr', rows=2) }}</div>
+                        <div class="col-12"><label class="form-label">{{ service_form.description_ar.label.text }}</label>{{ service_form.description_ar(class='form-control', id='c_svc_desc_ar', rows=2) }}</div>
+                        <div class="col-md-4"><label class="form-label">{{ service_form.department_id.label.text }}</label>{{ service_form.department_id(class='form-select', id='c_svc_department_id') }}</div>
+                        <div class="col-md-4"><label class="form-label">{{ service_form.icon.label.text }}</label>{{ service_form.icon(class='form-control', id='c_svc_icon', placeholder='bi-briefcase') }}</div>
+                        <div class="col-md-4"><label class="form-label">{{ service_form.order.label.text }}</label>{{ service_form.order(class='form-control', id='c_svc_order') }}</div>
+                        <div class="col-md-8"><label class="form-label">{{ service_form.image.label.text }}</label>{{ service_form.image(class='form-control', id='c_svc_image') }}</div>
+                        <div class="col-md-4 d-flex align-items-end"><div class="form-check">{{ service_form.active(class='form-check-input', id='c_svc_active') }}{{ service_form.active.label(class='form-check-label') }}</div></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>{{ service_form.submit(class='btn btn-primary-custom') }}</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="serviceEditModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" id="serviceEditForm" action="" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-header"><h5 class="modal-title">{{ 'Modifier le service' if current_lang=='fr' else 'تعديل الخدمة' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">{{ 'Nom (Français)' if current_lang=='fr' else 'الاسم (فرنسية)' }}</label><input type="text" name="name_fr" id="e_svc_name_fr" class="form-control" required></div>
+                        <div class="col-md-6"><label class="form-label">{{ 'Nom (Arabe)' if current_lang=='fr' else 'الاسم (عربية)' }}</label><input type="text" name="name_ar" id="e_svc_name_ar" class="form-control" required></div>
+                        <div class="col-12"><label class="form-label">{{ 'Description (Français)' if current_lang=='fr' else 'الوصف (فرنسية)' }}</label><textarea name="description_fr" id="e_svc_desc_fr" class="form-control" rows="2"></textarea></div>
+                        <div class="col-12"><label class="form-label">{{ 'Description (Arabe)' if current_lang=='fr' else 'الوصف (عربية)' }}</label><textarea name="description_ar" id="e_svc_desc_ar" class="form-control" rows="2"></textarea></div>
+                        <div class="col-md-4"><label class="form-label">{{ 'Département' if current_lang=='fr' else 'القسم' }}</label><select name="department_id" id="e_svc_department_id" class="form-select"><option value="0">-</option>{% for d in departments %}<option value="{{ d.id }}">{{ d.name_fr }}</option>{% endfor %}</select></div>
+                        <div class="col-md-4"><label class="form-label">{{ 'Icône' if current_lang=='fr' else 'الأيقونة' }}</label><input type="text" name="icon" id="e_svc_icon" class="form-control"></div>
+                        <div class="col-md-4"><label class="form-label">{{ "Ordre" if current_lang=='fr' else 'الترتيب' }}</label><input type="number" name="order" id="e_svc_order" class="form-control"></div>
+                        <div class="col-md-8"><label class="form-label">{{ 'Image' if current_lang=='fr' else 'الصورة' }}</label><input type="file" name="image" id="e_svc_image" class="form-control" accept="image/*"></div>
+                        <div class="col-md-4 d-flex align-items-end"><div class="form-check"><input type="checkbox" name="active" id="e_svc_active" class="form-check-input"><label class="form-check-label" for="e_svc_active">{{ 'Actif' if current_lang=='fr' else 'نشط' }}</label></div></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button><button type="submit" class="btn btn-primary-custom">{{ 'Enregistrer' if current_lang=='fr' else 'حفظ' }}</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ============================= MODALS : ACTUALITES ============================= -->
+<div class="modal fade" id="newsCreateModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('admin_news_create') }}" enctype="multipart/form-data">
+                {{ news_form.hidden_tag() }}
+                <div class="modal-header"><h5 class="modal-title">{{ 'Publier une actualité' if current_lang=='fr' else 'نشر خبر' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">{{ news_form.title_fr.label.text }}</label>{{ news_form.title_fr(class='form-control', id='c_news_title_fr') }}</div>
+                        <div class="col-md-6"><label class="form-label">{{ news_form.title_ar.label.text }}</label>{{ news_form.title_ar(class='form-control', id='c_news_title_ar') }}</div>
+                        <div class="col-12"><label class="form-label">{{ news_form.content_fr.label.text }}</label>{{ news_form.content_fr(class='form-control', id='c_news_content_fr', rows=4) }}</div>
+                        <div class="col-12"><label class="form-label">{{ news_form.content_ar.label.text }}</label>{{ news_form.content_ar(class='form-control', id='c_news_content_ar', rows=4) }}</div>
+                        <div class="col-md-8"><label class="form-label">{{ news_form.image.label.text }}</label>{{ news_form.image(class='form-control', id='c_news_image') }}</div>
+                        <div class="col-md-4 d-flex align-items-end"><div class="form-check">{{ news_form.active(class='form-check-input', id='c_news_active') }}{{ news_form.active.label(class='form-check-label') }}</div></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>{{ news_form.submit(class='btn btn-primary-custom') }}</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newsEditModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" id="newsEditForm" action="" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-header"><h5 class="modal-title">{{ "Modifier l'actualité" if current_lang=='fr' else 'تعديل الخبر' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">{{ 'Titre (Français)' if current_lang=='fr' else 'العنوان (فرنسية)' }}</label><input type="text" name="title_fr" id="e_news_title_fr" class="form-control" required></div>
+                        <div class="col-md-6"><label class="form-label">{{ 'Titre (Arabe)' if current_lang=='fr' else 'العنوان (عربية)' }}</label><input type="text" name="title_ar" id="e_news_title_ar" class="form-control" required></div>
+                        <div class="col-12"><label class="form-label">{{ 'Contenu (Français)' if current_lang=='fr' else 'المحتوى (فرنسية)' }}</label><textarea name="content_fr" id="e_news_content_fr" class="form-control" rows="4" required></textarea></div>
+                        <div class="col-12"><label class="form-label">{{ 'Contenu (Arabe)' if current_lang=='fr' else 'المحتوى (عربية)' }}</label><textarea name="content_ar" id="e_news_content_ar" class="form-control" rows="4" required></textarea></div>
+                        <div class="col-md-8"><label class="form-label">{{ 'Image' if current_lang=='fr' else 'الصورة' }}</label><input type="file" name="image" id="e_news_image" class="form-control" accept="image/*"></div>
+                        <div class="col-md-4 d-flex align-items-end"><div class="form-check"><input type="checkbox" name="active" id="e_news_active" class="form-check-input"><label class="form-check-label" for="e_news_active">{{ 'Publiée' if current_lang=='fr' else 'منشورة' }}</label></div></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button><button type="submit" class="btn btn-primary-custom">{{ 'Enregistrer' if current_lang=='fr' else 'حفظ' }}</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ============================= MODALS : DOCUMENTS, PLANS, GALERIE, VIDEOS ============================= -->
+<div class="modal fade" id="docCreateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('admin_document_create') }}" enctype="multipart/form-data">
+                {{ document_form.hidden_tag() }}
+                <div class="modal-header"><h5 class="modal-title">{{ 'Ajouter un document' if current_lang=='fr' else 'إضافة وثيقة' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">{{ document_form.title_fr.label.text }}</label>{{ document_form.title_fr(class='form-control', id='c_doc_title_fr') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ document_form.title_ar.label.text }}</label>{{ document_form.title_ar(class='form-control', id='c_doc_title_ar') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ document_form.service_id.label.text }}</label>{{ document_form.service_id(class='form-select', id='c_doc_service_id') }}</div>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">{{ document_form.reference.label.text }}</label>{{ document_form.reference(class='form-control', id='c_doc_reference') }}</div>
+                        <div class="col-md-6"><label class="form-label">{{ document_form.category.label.text }}</label>{{ document_form.category(class='form-select', id='c_doc_category') }}</div>
+                    </div>
+                    <div class="mb-3 mt-3"><label class="form-label">{{ document_form.file.label.text }}</label>{{ document_form.file(class='form-control', id='c_doc_file') }}</div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>{{ document_form.submit(class='btn btn-primary-custom') }}</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="docEditModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" id="docEditForm" action="" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-header"><h5 class="modal-title">{{ 'Modifier le document' if current_lang=='fr' else 'تعديل الوثيقة' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">{{ 'Titre (Français)' if current_lang=='fr' else 'العنوان (فرنسية)' }}</label><input type="text" name="title_fr" id="e_doc_title_fr" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label">{{ 'Titre (Arabe)' if current_lang=='fr' else 'العنوان (عربية)' }}</label><input type="text" name="title_ar" id="e_doc_title_ar" class="form-control" required></div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ 'Service concerné' if current_lang=='fr' else 'الخدمة المعنية' }}</label>
+                        <select name="service_id" id="e_doc_service_id" class="form-select">
+                            <option value="0">-</option>
+                            {% for s in services if s.active %}<option value="{{ s.id }}">{{ s.name_fr }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">{{ 'Référence / Numéro' if current_lang=='fr' else 'المرجع / الرقم' }}</label><input type="text" name="reference" id="e_doc_reference" class="form-control"></div>
+                        <div class="col-md-6"><label class="form-label">{{ 'Catégorie' if current_lang=='fr' else 'الفئة' }}</label>
+                            <select name="category" id="e_doc_category" class="form-select">
+                                {% for code, fr, ar in [('formulaire','Formulaire','استمارة'),('reglement','Règlement','نظام'),('document','Document','وثيقة')] %}
+                                <option value="{{ code }}">{{ fr if current_lang=='fr' else ar }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">{{ 'Remplacer le fichier (optionnel)' if current_lang=='fr' else 'استبدال الملف (اختياري)' }}</label>
+                        <input type="file" name="file" id="e_doc_file" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button><button type="submit" class="btn btn-primary-custom">{{ 'Enregistrer' if current_lang=='fr' else 'حفظ' }}</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="planCreateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('admin_urban_plan_create') }}" enctype="multipart/form-data">
+                {{ urban_plan_form.hidden_tag() }}
+                <div class="modal-header"><h5 class="modal-title">{{ "Ajouter un plan d'aménagement" if current_lang=='fr' else 'إضافة تصميم ترابي' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">{{ urban_plan_form.title_fr.label.text }}</label>{{ urban_plan_form.title_fr(class='form-control') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ urban_plan_form.title_ar.label.text }}</label>{{ urban_plan_form.title_ar(class='form-control') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ urban_plan_form.description_fr.label.text }}</label>{{ urban_plan_form.description_fr(class='form-control', rows=2) }}</div>
+                    <div class="mb-3"><label class="form-label">{{ urban_plan_form.description_ar.label.text }}</label>{{ urban_plan_form.description_ar(class='form-control', rows=2) }}</div>
+                    <div class="mb-3"><label class="form-label">{{ urban_plan_form.file.label.text }}</label>{{ urban_plan_form.file(class='form-control') }}</div>
+                    <div class="form-check">{{ urban_plan_form.active(class='form-check-input') }}{{ urban_plan_form.active.label(class='form-check-label') }}</div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>{{ urban_plan_form.submit(class='btn btn-primary-custom') }}</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="galleryCreateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('admin_gallery_add') }}" enctype="multipart/form-data">
+                {{ gallery_form.hidden_tag() }}
+                <div class="modal-header"><h5 class="modal-title">{{ 'Ajouter une image' if current_lang=='fr' else 'إضافة صورة' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">{{ gallery_form.title_fr.label.text }}</label>{{ gallery_form.title_fr(class='form-control') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ gallery_form.title_ar.label.text }}</label>{{ gallery_form.title_ar(class='form-control') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ gallery_form.category.label.text }}</label>{{ gallery_form.category(class='form-control') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ gallery_form.image.label.text }}</label>{{ gallery_form.image(class='form-control') }}</div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>{{ gallery_form.submit(class='btn btn-primary-custom') }}</div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="videoCreateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('admin_video_add') }}">
+                {{ video_form.hidden_tag() }}
+                <div class="modal-header"><h5 class="modal-title">{{ 'Ajouter une vidéo' if current_lang=='fr' else 'إضافة فيديو' }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">{{ video_form.title_fr.label.text }}</label>{{ video_form.title_fr(class='form-control') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ video_form.title_ar.label.text }}</label>{{ video_form.title_ar(class='form-control') }}</div>
+                    <div class="mb-3"><label class="form-label">{{ video_form.url.label.text }}</label>{{ video_form.url(class='form-control', placeholder='https://www.youtube.com/embed/...') }}</div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>{{ video_form.submit(class='btn btn-primary-custom') }}</div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

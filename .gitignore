@@ -1,0 +1,33 @@
+# Environnement Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Configuration locale
+.env
+instance/
+
+# Base de donnees locale (si SQLite utilise en tests)
+*.sqlite3
+*.db
+
+# Fichiers uploades par les utilisateurs
+static/uploads/*
+!static/uploads/.gitkeep
+!static/uploads/avatars/
+!static/uploads/services/
+!static/uploads/news/
+!static/uploads/gallery/
+!static/uploads/documents/
+!static/uploads/urban_plans/
+!static/uploads/requests/
+!static/uploads/qrcodes/
+
+# Editeurs / OS
+.vscode/
+.idea/
+.DS_Store
+*.log

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Rendez-vous' if current_lang=='fr' else 'المواعيد' }}{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1>{{ 'Rendez-vous' if current_lang=='fr' else 'المواعيد' }}</h1>
+        <p>{{ 'Gérez vos rendez-vous avec les services communaux.' if current_lang=='fr' else 'إدارة مواعيدكم مع المصالح الجماعية.' }}</p>
+    </div>
+    {% if current_user.has_role('citizen') %}
+    <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#newAppointmentModal"><i class="bi bi-calendar-plus"></i> {{ 'Réserver un rendez-vous' if current_lang=='fr' else 'حجز موعد' }}</button>
+    {% endif %}
+</div>
+
+<div class="content-card">
+    <div class="table-responsive-custom">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>{{ 'Service' if current_lang=='fr' else 'الخدمة' }}</th>
+                    {% if not current_user.has_role('citizen') %}<th>{{ 'Citoyen' if current_lang=='fr' else 'المواطن' }}</th>{% endif %}
+                    <th>{{ 'Date' if current_lang=='fr' else 'التاريخ' }}</th>
+                    <th>{{ 'Heure' if current_lang=='fr' else 'الوقت' }}</th>
+                    <th>{{ 'Statut' if current_lang=='fr' else 'الحالة' }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in appointments %}
+                <tr>
+                    <td>{{ a.service.name_fr if current_lang=='fr' else a.service.name_ar }}</td>
+                    {% if not current_user.has_role('citizen') %}<td>{{ a.citizen.user.full_name }}</td>{% endif %}
+                    <td>{{ a.appointment_date.strftime('%d/%m/%Y') }}</td>
+                    <td>{{ a.appointment_time.strftime('%H:%M') }}</td>
+                    <td><span class="badge-status badge-{{ a.status_css() }}">{{ a.status_label(current_lang) }}</span></td>
+                    <td class="text-end">
+                        {% if current_user.has_role('employee', 'admin') %}
+                        <form method="post" action="{{ url_for('appointment_update_status', appointment_id=a.id) }}" class="d-inline-flex gap-1">
+                            {{ status_form.hidden_tag() }}
+                            <select name="status" class="form-select form-select-sm" style="width:auto">
+                                {% for code, fr, ar, css in [('en_attente','En attente','قيد الانتظار',''),('confirme','Confirmé','مؤكد',''),('annule','Annulé','ملغى',''),('termine','Terminé','منتهي','')] %}
+                                <option value="{{ code }}" {{ 'selected' if a.status == code }}>{{ fr if current_lang=='fr' else ar }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-outline-custom">{{ 'OK' }}</button>
+                        </form>
+                        {% elif a.status in ['en_attente','confirme'] %}
+                        <form method="post" action="{{ url_for('appointment_cancel', appointment_id=a.id) }}" data-confirm="{{ 'Annuler ce rendez-vous ?' if current_lang=='fr' else 'إلغاء هذا الموعد؟' }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger-custom">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6"><p class="empty-state">{{ 'Aucun rendez-vous trouvé.' if current_lang=='fr' else 'لا توجد مواعيد.' }}</p></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if pagination and pagination.pages > 1 %}
+    <nav class="pagination-custom">
+        <ul class="pagination">
+            <li class="page-item {{ 'disabled' if not pagination.has_prev }}"><a class="page-link" href="{{ url_for('appointments_list', page=pagination.prev_num) }}">&laquo;</a></li>
+            {% for p in pagination.iter_pages() %}
+            <li class="page-item {{ 'active' if p == pagination.page }}"><a class="page-link" href="{{ url_for('appointments_list', page=p) if p else '#' }}">{{ p or '…' }}</a></li>
+            {% endfor %}
+            <li class="page-item {{ 'disabled' if not pagination.has_next }}"><a class="page-link" href="{{ url_for('appointments_list', page=pagination.next_num) }}">&raquo;</a></li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+{% if current_user.has_role('citizen') %}
+<div class="modal fade" id="newAppointmentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('appointments_list') }}">
+                {{ form.hidden_tag() }}
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ 'Réserver un rendez-vous' if current_lang=='fr' else 'حجز موعد' }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.service_id.label.text }}</label>
+                        {{ form.service_id(class='form-select') }}
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.appointment_date.label.text }}</label>
+                            {{ form.appointment_date(class='form-control') }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.appointment_time.label.text }}</label>
+                            {{ form.appointment_time(class='form-control') }}
+                        </div>
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label class="form-label">{{ form.notes.label.text }}</label>
+                        {{ form.notes(class='form-control', rows=3) }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>
+                    {{ form.submit(class='btn btn-primary-custom') }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

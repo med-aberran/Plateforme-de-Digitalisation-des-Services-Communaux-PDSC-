@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}{{ service.name_fr if service and current_lang=='fr' else service.name_ar if service else ('Nos services' if current_lang=='fr' else 'خدماتنا') }}{% endblock %}
+{% block content %}
+
+{% if service %}
+<!-- ============================= DETAIL D'UN SERVICE ============================= -->
+<section class="page-hero service-hero">
+    <div class="container">
+        <nav class="breadcrumb-custom"><a href="{{ url_for('index') }}">{{ 'Accueil' if current_lang=='fr' else 'الرئيسية' }}</a> <i class="bi bi-chevron-right"></i> <a href="{{ url_for('services_list') }}">{{ 'Services' if current_lang=='fr' else 'الخدمات' }}</a> <i class="bi bi-chevron-right"></i> <span>{{ service.name_fr if current_lang=='fr' else service.name_ar }}</span></nav>
+        <div class="service-hero-content">
+            <span class="service-icon-lg"><i class="bi {{ service.icon }}"></i></span>
+            <h1>{{ service.name_fr if current_lang=='fr' else service.name_ar }}</h1>
+        </div>
+    </div>
+</section>
+
+<div class="container page-section">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="content-card">
+                {% if service.image %}
+                <img src="{{ url_for('static', filename='uploads/' ~ service.image) }}" class="service-detail-image" alt="{{ service.name_fr }}">
+                {% endif %}
+                <h3>{{ 'Description du service' if current_lang=='fr' else 'وصف الخدمة' }}</h3>
+                <p>{{ service.description_fr if current_lang=='fr' else service.description_ar }}</p>
+                {% if service.department %}
+                <p class="text-muted-custom"><i class="bi bi-diagram-3"></i> {{ 'Département' if current_lang=='fr' else 'القسم' }} : {{ service.department.name_fr if current_lang=='fr' else service.department.name_ar }}</p>
+                {% endif %}
+            </div>
+
+            <div class="content-card">
+                <div class="card-header-row">
+                    <h3><i class="bi bi-folder2-open"></i> {{ 'Documents liés à ce service' if current_lang=='fr' else 'الوثائق المرتبطة بهذه الخدمة' }}</h3>
+                    <a href="{{ url_for('documents_list', service=service.id) }}">{{ 'Tout voir' if current_lang=='fr' else 'عرض الكل' }}</a>
+                </div>
+                <div class="documents-grid">
+                    {% for d in service_documents %}
+                    <a href="{{ url_for('static', filename='uploads/' ~ d.file_path) }}" target="_blank" class="document-item">
+                        <span class="document-icon"><i class="bi bi-file-earmark-pdf-fill"></i></span>
+                        <div>
+                            <strong>{{ d.title_fr if current_lang=='fr' else d.title_ar }}</strong>
+                            <span class="document-category">{{ d.category }}{% if d.reference %} · {{ d.reference }}{% endif %}</span>
+                        </div>
+                        <i class="bi bi-download document-download-icon"></i>
+                    </a>
+                    {% else %}
+                    <p class="empty-state">{{ 'Aucun document disponible pour ce service.' if current_lang=='fr' else 'لا توجد وثائق متاحة لهذه الخدمة.' }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="content-card cta-card">
+                <h4>{{ 'Faire une demande' if current_lang=='fr' else 'تقديم طلب' }}</h4>
+                <p>{{ 'Déposez votre demande en ligne pour ce service en quelques clics.' if current_lang=='fr' else 'قدم طلبكم لهذه الخدمة عبر الإنترنت في خطوات بسيطة.' }}</p>
+                {% if current_user.is_authenticated and current_user.has_role('citizen') %}
+                <a href="{{ url_for('request_create') }}?service={{ service.id }}" class="btn btn-primary-custom w-100"><i class="bi bi-file-earmark-plus"></i> {{ 'Déposer une demande' if current_lang=='fr' else 'إيداع طلب' }}</a>
+                {% else %}
+                <a href="{{ url_for('login', next=url_for('request_create')) }}" class="btn btn-primary-custom w-100"><i class="bi bi-box-arrow-in-right"></i> {{ 'Se connecter pour continuer' if current_lang=='fr' else 'تسجيل الدخول للمتابعة' }}</a>
+                {% endif %}
+                <a href="{{ url_for('appointments_list') }}" class="btn btn-outline-custom w-100 mt-2"><i class="bi bi-calendar-check"></i> {{ 'Prendre rendez-vous' if current_lang=='fr' else 'حجز موعد' }}</a>
+            </div>
+        </div>
+    </div>
+
+    {% if services %}
+    <h3 class="section-subtitle mt-5">{{ 'Autres services' if current_lang=='fr' else 'خدمات أخرى' }}</h3>
+    <div class="row g-4">
+        {% for s in services %}
+        <div class="col-md-3">
+            <a href="{{ url_for('service_detail', slug=s.slug) }}" class="service-card-mini">
+                <span class="service-icon"><i class="bi {{ s.icon }}"></i></span>
+                <span>{{ s.name_fr if current_lang=='fr' else s.name_ar }}</span>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+{% else %}
+<!-- ============================= CATALOGUE DES SERVICES ============================= -->
+<section class="page-hero">
+    <div class="container">
+        <h1>{{ 'Nos services' if current_lang=='fr' else 'خدماتنا' }}</h1>
+        <p>{{ 'Découvrez l\'ensemble des services administratifs disponibles en ligne.' if current_lang=='fr' else 'اكتشفوا جميع الخدمات الإدارية المتاحة عبر الإنترنت.' }}</p>
+    </div>
+</section>
+
+<div class="container page-section">
+    <div class="row g-4" id="servicesGrid">
+        {% for s in services %}
+        <div class="col-md-6 col-lg-4 service-grid-item">
+            <div class="service-card">
+                <div class="service-card-media">
+                    {% if s.image %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ s.image) }}" alt="{{ s.name_fr }}">
+                    {% else %}
+                    <div class="service-card-media-placeholder"><i class="bi {{ s.icon }}"></i></div>
+                    {% endif %}
+                </div>
+                <div class="service-card-body">
+                    <span class="service-icon"><i class="bi {{ s.icon }}"></i></span>
+                    <h3>{{ s.name_fr if current_lang=='fr' else s.name_ar }}</h3>
+                    <p>{{ (s.description_fr if current_lang=='fr' else s.description_ar) | truncate(90) }}</p>
+                    <a href="{{ url_for('service_detail', slug=s.slug) }}" class="service-link">{{ 'En savoir plus' if current_lang=='fr' else 'اعرف المزيد' }} <i class="bi bi-arrow-{{ 'left' if current_lang=='ar' else 'right' }}"></i></a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="empty-state">{{ 'Aucun service disponible pour le moment.' if current_lang=='fr' else 'لا توجد خدمات متاحة حاليا.' }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

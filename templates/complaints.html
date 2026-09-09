@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Réclamations' if current_lang=='fr' else 'الشكايات' }}{% endblock %}
+{% block content %}
+
+{% if complaint %}
+<!-- ============================= DETAIL RECLAMATION ============================= -->
+<div class="dashboard-header">
+    <div>
+        <h1>{{ complaint.subject }}</h1>
+        <p>{{ 'Réclamation' if current_lang=='fr' else 'شكاية' }} #{{ complaint.id }} · {{ complaint.created_at.strftime('%d/%m/%Y') }}</p>
+    </div>
+    <span class="badge-status badge-lg badge-{{ complaint.status_css() }}">{{ complaint.status_label(current_lang) }}</span>
+</div>
+
+<div class="content-card">
+    <h3>{{ 'Description' if current_lang=='fr' else 'الوصف' }}</h3>
+    <p>{{ complaint.description }}</p>
+    {% if not current_user.has_role('citizen') %}
+    <p class="text-muted-custom"><i class="bi bi-person"></i> {{ complaint.citizen.user.full_name }}
+    {% if complaint.department %} · <i class="bi bi-diagram-3"></i> {{ complaint.department.name_fr if current_lang=='fr' else complaint.department.name_ar }}{% endif %}</p>
+    {% endif %}
+</div>
+
+{% if complaint.response %}
+<div class="content-card response-card">
+    <h3><i class="bi bi-reply-fill"></i> {{ 'Réponse de l\'administration' if current_lang=='fr' else 'رد الإدارة' }}</h3>
+    <p>{{ complaint.response }}</p>
+</div>
+{% endif %}
+
+{% if current_user.has_role('employee', 'admin') %}
+<div class="content-card">
+    <h3>{{ 'Répondre à la réclamation' if current_lang=='fr' else 'الرد على الشكاية' }}</h3>
+    <form method="post" action="{{ url_for('complaint_respond', complaint_id=complaint.id) }}">
+        {{ response_form.hidden_tag() }}
+        <div class="mb-3">
+            {{ response_form.response(class='form-control', rows=4, placeholder='Votre réponse…') }}
+        </div>
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">{{ response_form.status.label.text }}</label>
+                {{ response_form.status(class='form-select') }}
+            </div>
+            <div class="col-md-4">
+                {{ response_form.submit(class='btn btn-primary-custom') }}
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+{% else %}
+<!-- ============================= LISTE DES RECLAMATIONS ============================= -->
+<div class="dashboard-header">
+    <div>
+        <h1>{{ 'Réclamations' if current_lang=='fr' else 'الشكايات' }}</h1>
+        <p>{{ "Suivez et gérez vos réclamations." if current_lang=='fr' else 'تتبعوا وأدروا شكاياتكم.' }}</p>
+    </div>
+    {% if current_user.has_role('citizen') %}
+    <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#newComplaintModal"><i class="bi bi-megaphone"></i> {{ 'Nouvelle réclamation' if current_lang=='fr' else 'شكاية جديدة' }}</button>
+    {% endif %}
+</div>
+
+<div class="content-card">
+    <div class="table-responsive-custom">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>{{ 'Objet' if current_lang=='fr' else 'الموضوع' }}</th>
+                    {% if not current_user.has_role('citizen') %}<th>{{ 'Citoyen' if current_lang=='fr' else 'المواطن' }}</th>{% endif %}
+                    <th>{{ 'Date' if current_lang=='fr' else 'التاريخ' }}</th>
+                    <th>{{ 'Statut' if current_lang=='fr' else 'الحالة' }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in complaints %}
+                <tr>
+                    <td>{{ c.subject }}</td>
+                    {% if not current_user.has_role('citizen') %}<td>{{ c.citizen.user.full_name }}</td>{% endif %}
+                    <td>{{ c.created_at.strftime('%d/%m/%Y') }}</td>
+                    <td><span class="badge-status badge-{{ c.status_css() }}">{{ c.status_label(current_lang) }}</span></td>
+                    <td class="text-end"><a href="{{ url_for('complaint_detail', complaint_id=c.id) }}" class="btn btn-sm btn-outline-custom">{{ 'Voir' if current_lang=='fr' else 'عرض' }}</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5"><p class="empty-state">{{ 'Aucune réclamation trouvée.' if current_lang=='fr' else 'لا توجد شكايات.' }}</p></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if pagination and pagination.pages > 1 %}
+    <nav class="pagination-custom">
+        <ul class="pagination">
+            <li class="page-item {{ 'disabled' if not pagination.has_prev }}"><a class="page-link" href="{{ url_for('complaints_list', page=pagination.prev_num) }}">&laquo;</a></li>
+            {% for p in pagination.iter_pages() %}
+            <li class="page-item {{ 'active' if p == pagination.page }}"><a class="page-link" href="{{ url_for('complaints_list', page=p) if p else '#' }}">{{ p or '…' }}</a></li>
+            {% endfor %}
+            <li class="page-item {{ 'disabled' if not pagination.has_next }}"><a class="page-link" href="{{ url_for('complaints_list', page=pagination.next_num) }}">&raquo;</a></li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+{% if current_user.has_role('citizen') %}
+<div class="modal fade" id="newComplaintModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('complaints_list') }}">
+                {{ form.hidden_tag() }}
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ 'Nouvelle réclamation' if current_lang=='fr' else 'شكاية جديدة' }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.department_id.label.text }}</label>
+                        {{ form.department_id(class='form-select') }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.subject.label.text }}</label>
+                        {{ form.subject(class='form-control') }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.description.label.text }}</label>
+                        {{ form.description(class='form-control', rows=4) }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</button>
+                    {{ form.submit(class='btn btn-primary-custom') }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

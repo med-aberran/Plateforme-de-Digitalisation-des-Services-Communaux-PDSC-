@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}{{ news_item.title_fr if news_item and current_lang=='fr' else news_item.title_ar if news_item else ('Actualités' if current_lang=='fr' else 'الأخبار') }}{% endblock %}
+{% block content %}
+
+{% if news_item %}
+<!-- ============================= DETAIL ACTUALITE ============================= -->
+<article class="news-detail-page">
+    <div class="container">
+        <nav class="breadcrumb-custom"><a href="{{ url_for('index') }}">{{ 'Accueil' if current_lang=='fr' else 'الرئيسية' }}</a> <i class="bi bi-chevron-right"></i> <a href="{{ url_for('news_list') }}">{{ 'Actualités' if current_lang=='fr' else 'الأخبار' }}</a></nav>
+        <h1>{{ news_item.title_fr if current_lang=='fr' else news_item.title_ar }}</h1>
+        <div class="news-meta">
+            <span><i class="bi bi-person"></i> {{ news_item.author.full_name if news_item.author else (commune_name_fr if current_lang=='fr' else commune_name_ar) }}</span>
+            <span><i class="bi bi-calendar3"></i> {{ news_item.published_at.strftime('%d/%m/%Y') }}</span>
+        </div>
+        {% if news_item.image %}
+        <img src="{{ url_for('static', filename='uploads/' ~ news_item.image) }}" class="news-detail-image" alt="{{ news_item.title_fr }}">
+        {% endif %}
+        <div class="news-content">
+            {{ (news_item.content_fr if current_lang=='fr' else news_item.content_ar) | replace('\n', '<br>') | safe }}
+        </div>
+    </div>
+</article>
+
+{% if news_items %}
+<div class="container page-section">
+    <h3 class="section-subtitle">{{ 'Autres actualités' if current_lang=='fr' else 'أخبار أخرى' }}</h3>
+    <div class="row g-4">
+        {% for n in news_items %}
+        <div class="col-md-4">
+            <a href="{{ url_for('news_detail', news_id=n.id) }}" class="news-card">
+                <div class="news-card-media">
+                    {% if n.image %}<img src="{{ url_for('static', filename='uploads/' ~ n.image) }}" alt="">{% else %}<div class="news-card-media-placeholder"><i class="bi bi-newspaper"></i></div>{% endif %}
+                </div>
+                <div class="news-card-body">
+                    <span class="news-date">{{ n.published_at.strftime('%d/%m/%Y') }}</span>
+                    <h4>{{ n.title_fr if current_lang=='fr' else n.title_ar }}</h4>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<!-- ============================= LISTE DES ACTUALITES ============================= -->
+<section class="page-hero">
+    <div class="container">
+        <h1>{{ 'Actualités & Événements' if current_lang=='fr' else 'الأخبار والفعاليات' }}</h1>
+        <p>{{ "Restez informés de l'actualité de votre commune." if current_lang=='fr' else 'ابقوا على اطلاع بآخر أخبار جماعتكم.' }}</p>
+    </div>
+</section>
+
+<div class="container page-section">
+    <div class="row g-4">
+        {% for n in news_items %}
+        <div class="col-md-4">
+            <a href="{{ url_for('news_detail', news_id=n.id) }}" class="news-card">
+                <div class="news-card-media">
+                    {% if n.image %}<img src="{{ url_for('static', filename='uploads/' ~ n.image) }}" alt="">{% else %}<div class="news-card-media-placeholder"><i class="bi bi-newspaper"></i></div>{% endif %}
+                </div>
+                <div class="news-card-body">
+                    <span class="news-date">{{ n.published_at.strftime('%d/%m/%Y') }}</span>
+                    <h4>{{ n.title_fr if current_lang=='fr' else n.title_ar }}</h4>
+                    <p>{{ (n.content_fr if current_lang=='fr' else n.content_ar) | truncate(100) }}</p>
+                </div>
+            </a>
+        </div>
+        {% else %}
+        <p class="empty-state">{{ 'Aucune actualité publiée pour le moment.' if current_lang=='fr' else 'لا توجد أخبار منشورة حاليا.' }}</p>
+        {% endfor %}
+    </div>
+
+    {% if pagination and pagination.pages > 1 %}
+    <nav class="pagination-custom">
+        <ul class="pagination">
+            <li class="page-item {{ 'disabled' if not pagination.has_prev }}"><a class="page-link" href="{{ url_for('news_list', page=pagination.prev_num) }}">&laquo;</a></li>
+            {% for p in pagination.iter_pages() %}
+            <li class="page-item {{ 'active' if p == pagination.page }}"><a class="page-link" href="{{ url_for('news_list', page=p) if p else '#' }}">{{ p or '…' }}</a></li>
+            {% endfor %}
+            <li class="page-item {{ 'disabled' if not pagination.has_next }}"><a class="page-link" href="{{ url_for('news_list', page=pagination.next_num) }}">&raquo;</a></li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

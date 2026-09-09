@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Inscription' if current_lang=='fr' else 'إنشاء حساب' }}{% endblock %}
+{% block content %}
+<section class="auth-section">
+    <div class="auth-card auth-card-wide">
+        <div class="auth-visual">
+            <div class="auth-visual-pattern"></div>
+            <span class="brand-emblem large"><i class="bi bi-shield-fill-check"></i></span>
+            <h2>{{ commune_name_fr if current_lang == 'fr' else commune_name_ar }}</h2>
+            <p>{{ 'Créez votre compte citoyen pour déposer vos demandes en ligne.' if current_lang=='fr' else 'أنشئ حسابك كمواطن لتقديم طلباتك عبر الإنترنت.' }}</p>
+            <ul class="auth-benefits">
+                <li><i class="bi bi-check-circle-fill"></i> {{ 'Suivi en temps réel de vos démarches' if current_lang=='fr' else 'تتبع إجراءاتكم في الوقت الحقيقي' }}</li>
+                <li><i class="bi bi-check-circle-fill"></i> {{ 'Prise de rendez-vous en ligne' if current_lang=='fr' else 'حجز المواعيد عبر الإنترنت' }}</li>
+                <li><i class="bi bi-check-circle-fill"></i> {{ 'Réception de vos documents numérisés' if current_lang=='fr' else 'استلام وثائقكم الرقمية' }}</li>
+            </ul>
+        </div>
+        <div class="auth-form-wrap">
+            <h1 class="auth-title">{{ 'Créer un compte' if current_lang=='fr' else 'إنشاء حساب' }}</h1>
+            <form method="post" action="{{ url_for('register') }}" novalidate class="needs-validation" data-validate>
+                {{ form.hidden_tag() }}
+                <div class="row g-3">
+                    <div class="col-md-6 form-floating">
+                        {{ form.first_name(class='form-control', placeholder='Prénom') }}
+                        <label>{{ form.first_name.label.text }}</label>
+                    </div>
+                    <div class="col-md-6 form-floating">
+                        {{ form.last_name(class='form-control', placeholder='Nom') }}
+                        <label>{{ form.last_name.label.text }}</label>
+                    </div>
+                    <div class="col-md-6 form-floating">
+                        {{ form.email(class='form-control', placeholder='Email') }}
+                        <label>{{ form.email.label.text }}</label>
+                    </div>
+                    <div class="col-md-6 form-floating">
+                        {{ form.phone(class='form-control', placeholder='Téléphone') }}
+                        <label>{{ form.phone.label.text }}</label>
+                    </div>
+                    <div class="col-md-6 form-floating">
+                        {{ form.cin(class='form-control', placeholder='CIN') }}
+                        <label>{{ form.cin.label.text }}</label>
+                    </div>
+                    <div class="col-md-6 form-floating password-field">
+                        {{ form.password(class='form-control', placeholder='Mot de passe') }}
+                        <label>{{ form.password.label.text }}</label>
+                        <button type="button" class="password-toggle" tabindex="-1"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <div class="col-md-6 form-floating">
+                        {{ form.confirm_password(class='form-control', placeholder='Confirmer') }}
+                        <label>{{ form.confirm_password.label.text }}</label>
+                    </div>
+                    <div class="col-12">
+                        <div class="password-strength" data-strength-for="password"><span></span></div>
+                    </div>
+                    <div class="col-12 form-check">
+                        {{ form.accept_terms(class='form-check-input') }}
+                        {{ form.accept_terms.label(class='form-check-label') }}
+                    </div>
+                </div>
+                {{ form.submit(class='btn btn-primary-custom w-100 mt-3') }}
+            </form>
+            <p class="auth-switch">{{ 'Vous avez déjà un compte ?' if current_lang=='fr' else 'لديك حساب بالفعل؟' }} <a href="{{ url_for('login') }}">{{ 'Se connecter' if current_lang=='fr' else 'تسجيل الدخول' }}</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}

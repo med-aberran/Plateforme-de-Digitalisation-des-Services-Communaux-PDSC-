@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}{{ ('Nouvelle demande' if create_mode else 'Demandes') if current_lang=='fr' else ('طلب جديد' if create_mode else 'الطلبات') }}{% endblock %}
+{% block content %}
+
+{% if create_mode %}
+<!-- ============================= NOUVELLE DEMANDE ============================= -->
+<div class="dashboard-header">
+    <h1>{{ 'Nouvelle demande' if current_lang=='fr' else 'طلب جديد' }}</h1>
+    <p>{{ 'Sélectionnez un service et joignez les documents nécessaires.' if current_lang=='fr' else 'اختر خدمة وأرفق الوثائق اللازمة.' }}</p>
+</div>
+
+<div class="content-card">
+    <form method="post" action="{{ url_for('request_create') }}" enctype="multipart/form-data" novalidate class="needs-validation" data-validate>
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            <label class="form-label">{{ form.service_id.label.text }}</label>
+            {{ form.service_id(class='form-select', id='requestServiceSelect') }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">{{ form.notes.label.text }}</label>
+            {{ form.notes(class='form-control', rows=4, placeholder='Décrivez votre demande…') }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">{{ form.documents.label.text }}</label>
+            <div class="file-drop-zone" id="requestFileDropZone">
+                <i class="bi bi-cloud-arrow-up"></i>
+                <p>{{ 'Glissez vos fichiers ici ou cliquez pour parcourir' if current_lang=='fr' else 'اسحب ملفاتكم هنا أو انقر للتصفح' }}</p>
+                <span class="text-muted-custom">PDF, DOC, DOCX, JPG, PNG</span>
+                {{ form.documents(class='file-drop-input', multiple=true) }}
+            </div>
+            <ul id="requestFileList" class="file-list"></ul>
+        </div>
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle-fill"></i>
+            {{ "Un numéro de suivi et un QR code vous seront attribués dès la soumission de votre demande." if current_lang=='fr' else 'سيتم تخصيص رقم تتبع ورمز QR لكم فور تقديم طلبكم.' }}
+        </div>
+        {{ form.submit(class='btn btn-primary-custom') }}
+        <a href="{{ url_for('requests_list') }}" class="btn btn-outline-custom">{{ 'Annuler' if current_lang=='fr' else 'إلغاء' }}</a>
+    </form>
+</div>
+
+{% else %}
+<!-- ============================= LISTE DES DEMANDES ============================= -->
+<div class="dashboard-header">
+    <div>
+        <h1>{{ 'Mes demandes' if current_user.has_role('citizen') else 'Demandes' if current_lang=='fr' else ('طلباتي' if current_user.has_role('citizen') else 'الطلبات') }}</h1>
+        <p>{{ 'Consultez et suivez vos démarches administratives.' if current_lang=='fr' else 'اطلعوا على إجراءاتكم الإدارية وتتبعوها.' }}</p>
+    </div>
+    {% if current_user.has_role('citizen') %}
+    <a href="{{ url_for('request_create') }}" class="btn btn-primary-custom"><i class="bi bi-file-earmark-plus"></i> {{ 'Nouvelle demande' if current_lang=='fr' else 'طلب جديد' }}</a>
+    {% elif current_user.has_role('employee', 'admin') %}
+    <a href="{{ url_for('export_requests_excel') }}" class="btn btn-outline-custom"><i class="bi bi-file-earmark-excel"></i> {{ 'Exporter en Excel' if current_lang=='fr' else 'تصدير Excel' }}</a>
+    {% endif %}
+</div>
+
+<div class="content-card">
+    <div class="table-toolbar">
+        <div class="filter-pills">
+            <a href="{{ url_for('requests_list') }}" class="filter-pill {{ 'active' if not status_filter }}">{{ 'Toutes' if current_lang=='fr' else 'الكل' }}</a>
+            {% for code, fr, ar, css in [('soumise','Soumises','مُقدَّمة',''),('en_cours','En cours','قيد المعالجة',''),('terminee','Terminées','منجزة',''),('refusee','Refusées','مرفوضة','')] %}
+            <a href="{{ url_for('requests_list', status=code) }}" class="filter-pill {{ 'active' if status_filter == code }}">{{ fr if current_lang=='fr' else ar }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="table-responsive-custom">
+        <table class="table-custom" id="requestsTable">
+            <thead>
+                <tr>
+                    <th>{{ 'N° de suivi' if current_lang=='fr' else 'رقم التتبع' }}</th>
+                    <th>{{ 'Service' if current_lang=='fr' else 'الخدمة' }}</th>
+                    {% if not current_user.has_role('citizen') %}<th>{{ 'Citoyen' if current_lang=='fr' else 'المواطن' }}</th>{% endif %}
+                    <th>{{ 'Statut' if current_lang=='fr' else 'الحالة' }}</th>
+                    <th>{{ 'Date' if current_lang=='fr' else 'التاريخ' }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in requests %}
+                <tr>
+                    <td><span class="mono">{{ r.tracking_number }}</span></td>
+                    <td>{{ r.service.name_fr if current_lang=='fr' else r.service.name_ar }}</td>
+                    {% if not current_user.has_role('citizen') %}<td>{{ r.citizen.user.full_name }}</td>{% endif %}
+                    <td><span class="badge-status badge-{{ r.status_css() }}">{{ r.status_label(current_lang) }}</span></td>
+                    <td>{{ r.created_at.strftime('%d/%m/%Y') }}</td>
+                    <td class="text-end"><a href="{{ url_for('request_detail', request_id=r.id) }}" class="btn btn-sm btn-outline-custom">{{ 'Voir' if current_lang=='fr' else 'عرض' }}</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6"><p class="empty-state">{{ 'Aucune demande trouvée.' if current_lang=='fr' else 'لا توجد طلبات.' }}</p></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if pagination and pagination.pages > 1 %}
+    <nav class="pagination-custom">
+        <ul class="pagination">
+            <li class="page-item {{ 'disabled' if not pagination.has_prev }}"><a class="page-link" href="{{ url_for('requests_list', page=pagination.prev_num, status=status_filter) }}">&laquo;</a></li>
+            {% for p in pagination.iter_pages() %}
+            <li class="page-item {{ 'active' if p == pagination.page }}"><a class="page-link" href="{{ url_for('requests_list', page=p, status=status_filter) if p else '#' }}">{{ p or '…' }}</a></li>
+            {% endfor %}
+            <li class="page-item {{ 'disabled' if not pagination.has_next }}"><a class="page-link" href="{{ url_for('requests_list', page=pagination.next_num, status=status_filter) }}">&raquo;</a></li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

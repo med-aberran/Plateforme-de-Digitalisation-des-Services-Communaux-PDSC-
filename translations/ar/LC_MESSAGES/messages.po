@@ -1,0 +1,562 @@
+# Arabic translations for PDSC.
+# Copyright (C) 2026 Commune
+# This file is distributed under the same license as the PDSC project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PDSC VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-08-10 20:13+0000\n"
+"PO-Revision-Date: 2026-07-29 18:36+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ar\n"
+"Language-Team: ar <LL@li.org>\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=0 && n%100<=2 ? 4 : 5);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: forms.py:32 forms.py:84 forms.py:169
+msgid "Prénom"
+msgstr "الاسم الشخصي"
+
+#: forms.py:33 forms.py:85 forms.py:170
+msgid "Nom"
+msgstr "الاسم العائلي"
+
+#: forms.py:34 forms.py:51 forms.py:58 forms.py:124 forms.py:171
+msgid "Adresse e-mail"
+msgstr "البريد الإلكتروني"
+
+#: forms.py:35 forms.py:86 forms.py:172
+msgid "Téléphone"
+msgstr "الهاتف"
+
+#: forms.py:36
+msgid "CIN"
+msgstr "رقم البطاقة الوطنية"
+
+#: forms.py:37 forms.py:52
+msgid "Mot de passe"
+msgstr "كلمة المرور"
+
+#: forms.py:39 forms.py:65 forms.py:74
+msgid "Confirmer le mot de passe"
+msgstr "تأكيد كلمة المرور"
+
+#: forms.py:40 forms.py:66 forms.py:75
+msgid "Les mots de passe ne correspondent pas."
+msgstr "كلمتا المرور غير متطابقتين."
+
+#: forms.py:42
+msgid "J'accepte les conditions d'utilisation"
+msgstr "أوافق على شروط الاستخدام"
+
+#: forms.py:43
+msgid "S'inscrire"
+msgstr "إنشاء حساب"
+
+#: forms.py:47 routes.py:931
+msgid "Cette adresse e-mail est déjà utilisée."
+msgstr "هذا البريد الإلكتروني مستخدم بالفعل."
+
+#: forms.py:53
+msgid "Se souvenir de moi"
+msgstr "تذكرني"
+
+#: forms.py:54
+msgid "Se connecter"
+msgstr "تسجيل الدخول"
+
+#: forms.py:59
+msgid "Envoyer le lien de réinitialisation"
+msgstr "إرسال رابط إعادة التعيين"
+
+#: forms.py:63 forms.py:72
+msgid "Nouveau mot de passe"
+msgstr "كلمة مرور جديدة"
+
+#: forms.py:67
+msgid "Réinitialiser le mot de passe"
+msgstr "إعادة تعيين كلمة المرور"
+
+#: forms.py:71
+msgid "Mot de passe actuel"
+msgstr "كلمة المرور الحالية"
+
+#: forms.py:76
+msgid "Changer le mot de passe"
+msgstr "تغيير كلمة المرور"
+
+#: forms.py:87
+msgid "Adresse"
+msgstr "العنوان"
+
+#: forms.py:88
+msgid "Ville"
+msgstr "المدينة"
+
+#: forms.py:89
+msgid "Photo de profil"
+msgstr "الصورة الشخصية"
+
+#: forms.py:89 forms.py:197 forms.py:212 forms.py:242
+msgid "Images uniquement."
+msgstr "الصور فقط."
+
+#: forms.py:90
+msgid "Langue préférée"
+msgstr "اللغة المفضلة"
+
+#: forms.py:91 forms.py:179 forms.py:187 forms.py:200 forms.py:214 forms.py:225
+#: forms.py:235 forms.py:255
+msgid "Enregistrer"
+msgstr "حفظ"
+
+#: forms.py:99 forms.py:108 forms.py:218
+msgid "Service concerné"
+msgstr "الخدمة المعنية"
+
+#: forms.py:100
+msgid "Description de la demande"
+msgstr "وصف الطلب"
+
+#: forms.py:102
+msgid "Pièces jointes"
+msgstr "المرفقات"
+
+#: forms.py:103
+msgid "Formats autorisés : PDF, DOC, DOCX, JPG, PNG."
+msgstr "الصيغ المسموح بها: PDF، DOC، DOCX، JPG، PNG."
+
+#: forms.py:104
+msgid "Soumettre la demande"
+msgstr "تقديم الطلب"
+
+#: forms.py:109
+msgid "Date souhaitée"
+msgstr "التاريخ المطلوب"
+
+#: forms.py:110
+msgid "Heure souhaitée"
+msgstr "الوقت المطلوب"
+
+#: forms.py:111
+msgid "Motif du rendez-vous"
+msgstr "سبب الموعد"
+
+#: forms.py:112
+msgid "Réserver"
+msgstr "حجز"
+
+#: forms.py:116
+msgid "Département concerné"
+msgstr "القسم المعني"
+
+#: forms.py:117 forms.py:125
+msgid "Objet"
+msgstr "الموضوع"
+
+#: forms.py:118
+msgid "Description"
+msgstr "الوصف"
+
+#: forms.py:119
+msgid "Envoyer la réclamation"
+msgstr "إرسال الشكاية"
+
+#: forms.py:123
+msgid "Nom complet"
+msgstr "الاسم الكامل"
+
+#: forms.py:126
+msgid "Message"
+msgstr "الرسالة"
+
+#: forms.py:127
+msgid "Envoyer"
+msgstr "إرسال"
+
+#: forms.py:138
+msgid "Nouveau statut"
+msgstr "الحالة الجديدة"
+
+#: forms.py:139
+msgid "Commentaire (visible par le citoyen)"
+msgstr "تعليق (مرئي للمواطن)"
+
+#: forms.py:140 forms.py:155
+msgid "Mettre à jour"
+msgstr "تحديث"
+
+#: forms.py:144
+msgid "Ajouter un commentaire"
+msgstr "إضافة تعليق"
+
+#: forms.py:145
+msgid "Publier"
+msgstr "نشر"
+
+#: forms.py:149
+msgid "Affecter à l'employé"
+msgstr "إسناد إلى الموظف"
+
+#: forms.py:150
+msgid "Affecter"
+msgstr "إسناد"
+
+#: forms.py:154 forms.py:160
+msgid "Statut"
+msgstr "الحالة"
+
+#: forms.py:159
+msgid "Réponse"
+msgstr "الرد"
+
+#: forms.py:161
+msgid "Répondre"
+msgstr "الرد"
+
+#: forms.py:173
+msgid "Rôle"
+msgstr "الدور"
+
+#: forms.py:174
+msgid "Département (employé)"
+msgstr "القسم (الموظف)"
+
+#: forms.py:175
+msgid "Compte actif"
+msgstr "حساب نشط"
+
+#: forms.py:177
+msgid "Mot de passe (laisser vide pour ne pas modifier)"
+msgstr "كلمة المرور (اتركها فارغة لعدم التغيير)"
+
+#: forms.py:183 forms.py:192
+msgid "Nom (Français)"
+msgstr "الاسم (بالفرنسية)"
+
+#: forms.py:184 forms.py:193
+msgid "Nom (Arabe)"
+msgstr "الاسم (بالعربية)"
+
+#: forms.py:185 forms.py:194 forms.py:231
+msgid "Description (Français)"
+msgstr "الوصف (بالفرنسية)"
+
+#: forms.py:186 forms.py:195 forms.py:232
+msgid "Description (Arabe)"
+msgstr "الوصف (بالعربية)"
+
+#: forms.py:191
+msgid "Département"
+msgstr "القسم"
+
+#: forms.py:196
+msgid "Icône (classe Bootstrap Icons)"
+msgstr "الأيقونة (فئة Bootstrap Icons)"
+
+#: forms.py:197 forms.py:212 forms.py:242
+msgid "Image"
+msgstr "الصورة"
+
+#: forms.py:198
+msgid "Ordre d'affichage"
+msgstr "ترتيب العرض"
+
+#: forms.py:199 forms.py:234
+msgid "Actif"
+msgstr "نشط"
+
+#: forms.py:208 forms.py:219 forms.py:229 forms.py:239 forms.py:247
+msgid "Titre (Français)"
+msgstr "العنوان (بالفرنسية)"
+
+#: forms.py:209 forms.py:220 forms.py:230 forms.py:240 forms.py:248
+msgid "Titre (Arabe)"
+msgstr "العنوان (بالعربية)"
+
+#: forms.py:210
+msgid "Contenu (Français)"
+msgstr "المحتوى (بالفرنسية)"
+
+#: forms.py:211
+msgid "Contenu (Arabe)"
+msgstr "المحتوى (بالعربية)"
+
+#: forms.py:213
+msgid "Publiée"
+msgstr "منشورة"
+
+#: forms.py:221
+msgid "Référence / Numéro"
+msgstr "المرجع / الرقم"
+
+#: forms.py:222 forms.py:241
+msgid "Catégorie"
+msgstr "الفئة"
+
+#: forms.py:224
+msgid "Fichier"
+msgstr "الملف"
+
+#: forms.py:224
+msgid "Formats autorisés : PDF, DOC, DOCX."
+msgstr "الصيغ المسموح بها: PDF، DOC، DOCX."
+
+#: forms.py:233
+msgid "Fichier PDF"
+msgstr "ملف PDF"
+
+#: forms.py:233
+msgid "PDF uniquement."
+msgstr "PDF فقط."
+
+#: forms.py:243 forms.py:250
+msgid "Ajouter"
+msgstr "إضافة"
+
+#: forms.py:249
+msgid "URL de la vidéo (YouTube/Vimeo)"
+msgstr "رابط الفيديو (YouTube/Vimeo)"
+
+#: forms.py:254
+msgid "Valeur"
+msgstr "القيمة"
+
+#: forms.py:259 forms.py:260
+msgid "Rechercher"
+msgstr "بحث"
+
+#: routes.py:133
+msgid "Votre message a bien été envoyé. Nous vous répondrons rapidement."
+msgstr "تم إرسال رسالتكم بنجاح. سنرد عليكم في أقرب وقت."
+
+#: routes.py:205
+msgid "Veuillez saisir un numéro de suivi valide."
+msgstr "يرجى إدخال رقم تتبع صحيح."
+
+#: routes.py:213
+msgid "Aucune demande ne correspond à ce numéro de suivi."
+msgstr "لا يوجد طلب يطابق رقم التتبع هذا."
+
+#: routes.py:266
+msgid "Inscription réussie ! Un e-mail de vérification vous a été envoyé."
+msgstr "تم إنشاء الحساب بنجاح! تم إرسال بريد إلكتروني للتحقق."
+
+#: routes.py:268
+#, python-format
+msgid "[Développement] Lien de vérification : %(url)s"
+msgstr "[تطوير] رابط التحقق: %(url)s"
+
+#: routes.py:279
+msgid "Le lien de vérification est invalide ou expiré."
+msgstr "رابط التحقق غير صالح أو منتهي الصلاحية."
+
+#: routes.py:285
+msgid "Votre adresse e-mail a été vérifiée. Vous pouvez maintenant vous connecter."
+msgstr "تم التحقق من بريدكم الإلكتروني. يمكنكم الآن تسجيل الدخول."
+
+#: routes.py:299
+msgid "Votre compte a été désactivé. Contactez l'administration."
+msgstr "تم تعطيل حسابكم. يرجى الاتصال بالإدارة."
+
+#: routes.py:305
+msgid "Adresse e-mail ou mot de passe incorrect."
+msgstr "البريد الإلكتروني أو كلمة المرور غير صحيحة."
+
+#: routes.py:315
+msgid "Vous avez été déconnecté avec succès."
+msgstr "تم تسجيل خروجكم بنجاح."
+
+#: routes.py:333
+#, python-format
+msgid "[Développement] Lien de réinitialisation : %(url)s"
+msgstr "[تطوير] رابط إعادة التعيين: %(url)s"
+
+#: routes.py:334
+msgid "Si un compte existe avec cette adresse, un e-mail a été envoyé."
+msgstr "إذا كان هناك حساب مرتبط بهذا البريد، فقد تم إرسال رسالة إليه."
+
+#: routes.py:343
+msgid "Le lien de réinitialisation est invalide ou expiré."
+msgstr "رابط إعادة التعيين غير صالح أو منتهي الصلاحية."
+
+#: routes.py:352
+msgid "Votre mot de passe a été réinitialisé. Vous pouvez vous connecter."
+msgstr "تمت إعادة تعيين كلمة المرور. يمكنكم تسجيل الدخول."
+
+#: routes.py:387
+msgid "Votre profil a été mis à jour avec succès."
+msgstr "تم تحديث ملفكم الشخصي بنجاح."
+
+#: routes.py:400
+msgid "Le mot de passe actuel est incorrect."
+msgstr "كلمة المرور الحالية غير صحيحة."
+
+#: routes.py:405
+msgid "Votre mot de passe a été modifié avec succès."
+msgstr "تم تغيير كلمة المرور بنجاح."
+
+#: routes.py:603
+#, python-format
+msgid "Votre demande a été soumise avec succès. Numéro de suivi : %(num)s"
+msgstr "تم تقديم طلبكم بنجاح. رقم التتبع: %(num)s"
+
+#: routes.py:651
+#, python-format
+msgid "Mise à jour de votre demande %(num)s"
+msgstr "تحديث بخصوص طلبكم %(num)s"
+
+#: routes.py:652 routes.py:784
+#, python-format
+msgid "Nouveau statut : %(status)s"
+msgstr "الحالة الجديدة: %(status)s"
+
+#: routes.py:655
+msgid "Le statut de la demande a été mis à jour."
+msgstr "تم تحديث حالة الطلب."
+
+#: routes.py:675
+msgid "Nouveau commentaire sur votre demande"
+msgstr "تعليق جديد على طلبكم"
+
+#: routes.py:677
+msgid "Votre commentaire a été publié."
+msgstr "تم نشر تعليقكم."
+
+#: routes.py:698
+msgid "La demande a été affectée avec succès."
+msgstr "تم إسناد الطلب بنجاح."
+
+#: routes.py:759
+msgid "Votre demande de rendez-vous a été enregistrée."
+msgstr "تم تسجيل طلب موعدكم."
+
+#: routes.py:783
+msgid "Mise à jour de votre rendez-vous"
+msgstr "تحديث بخصوص موعدكم"
+
+#: routes.py:786
+msgid "Le statut du rendez-vous a été mis à jour."
+msgstr "تم تحديث حالة الموعد."
+
+#: routes.py:802
+msgid "Le rendez-vous a été annulé."
+msgstr "تم إلغاء الموعد."
+
+#: routes.py:839
+msgid "Votre réclamation a été envoyée. Nous la traiterons rapidement."
+msgstr "تم إرسال شكايتكم. سنعالجها في أقرب وقت."
+
+#: routes.py:882
+msgid "Réponse à votre réclamation"
+msgstr "رد على شكايتكم"
+
+#: routes.py:885
+msgid "Votre réponse a été envoyée au citoyen."
+msgstr "تم إرسال ردكم إلى المواطن."
+
+#: routes.py:952
+msgid "Utilisateur créé avec succès."
+msgstr "تم إنشاء المستخدم بنجاح."
+
+#: routes.py:978
+msgid "Utilisateur mis à jour avec succès."
+msgstr "تم تحديث المستخدم بنجاح."
+
+#: routes.py:991
+msgid "Le statut du compte a été mis à jour."
+msgstr "تم تحديث حالة الحساب."
+
+#: routes.py:1000
+msgid "Vous ne pouvez pas supprimer votre propre compte."
+msgstr "لا يمكنكم حذف حسابكم الخاص."
+
+#: routes.py:1005
+msgid "Utilisateur supprimé avec succès."
+msgstr "تم حذف المستخدم بنجاح."
+
+#: routes.py:1022
+msgid "Département créé avec succès."
+msgstr "تم إنشاء القسم بنجاح."
+
+#: routes.py:1039
+msgid "Département mis à jour avec succès."
+msgstr "تم تحديث القسم بنجاح."
+
+#: routes.py:1051
+msgid "Département supprimé avec succès."
+msgstr "تم حذف القسم بنجاح."
+
+#: routes.py:1084
+msgid "Service créé avec succès."
+msgstr "تم إنشاء الخدمة بنجاح."
+
+#: routes.py:1110
+msgid "Service mis à jour avec succès."
+msgstr "تم تحديث الخدمة بنجاح."
+
+#: routes.py:1123
+msgid "Service supprimé avec succès."
+msgstr "تم حذف الخدمة بنجاح."
+
+#: routes.py:1142
+msgid "Actualité publiée avec succès."
+msgstr "تم نشر الخبر بنجاح."
+
+#: routes.py:1163
+msgid "Actualité mise à jour avec succès."
+msgstr "تم تحديث الخبر بنجاح."
+
+#: routes.py:1176
+msgid "Actualité supprimée avec succès."
+msgstr "تم حذف الخبر بنجاح."
+
+#: routes.py:1198
+msgid "Document publié avec succès."
+msgstr "تم نشر الوثيقة بنجاح."
+
+#: routes.py:1222
+msgid "Document mis à jour avec succès."
+msgstr "تم تحديث الوثيقة بنجاح."
+
+#: routes.py:1235
+msgid "Document supprimé avec succès."
+msgstr "تم حذف الوثيقة بنجاح."
+
+#: routes.py:1250
+msgid "Plan d'aménagement ajouté avec succès."
+msgstr "تمت إضافة التصميم الترابي بنجاح."
+
+#: routes.py:1263
+msgid "Le plan d'aménagement affiché sur le site a été mis à jour."
+msgstr "تم تحديث التصميم الترابي المعروض في الموقع."
+
+#: routes.py:1274
+msgid "Plan d'aménagement supprimé avec succès."
+msgstr "تم حذف التصميم الترابي بنجاح."
+
+#: routes.py:1292
+msgid "Image ajoutée à la galerie avec succès."
+msgstr "تمت إضافة الصورة إلى المعرض بنجاح."
+
+#: routes.py:1305
+msgid "Image supprimée avec succès."
+msgstr "تم حذف الصورة بنجاح."
+
+#: routes.py:1316
+msgid "Vidéo ajoutée avec succès."
+msgstr "تمت إضافة الفيديو بنجاح."
+
+#: routes.py:1328
+msgid "Vidéo supprimée avec succès."
+msgstr "تم حذف الفيديو بنجاح."
+
+#: routes.py:1347
+msgid "Paramètre mis à jour avec succès."
+msgstr "تم تحديث الإعداد بنجاح."
+

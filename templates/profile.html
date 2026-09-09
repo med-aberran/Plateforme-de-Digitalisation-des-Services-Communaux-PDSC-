@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Mon profil' if current_lang=='fr' else 'ملفي الشخصي' }}{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+    <h1>{{ 'Mon profil' if current_lang=='fr' else 'ملفي الشخصي' }}</h1>
+    <p>{{ 'Gérez vos informations personnelles' if current_lang=='fr' else 'إدارة معلوماتكم الشخصية' }}</p>
+</div>
+
+<div class="content-card profile-card">
+    <div class="profile-header">
+        {% if current_user.avatar %}
+        <img src="{{ url_for('static', filename='uploads/' ~ current_user.avatar) }}" class="profile-avatar" alt="{{ current_user.full_name }}">
+        {% else %}
+        <div class="profile-avatar placeholder"><i class="bi bi-person-fill"></i></div>
+        {% endif %}
+        <div>
+            <h2>{{ current_user.full_name }}</h2>
+            <span class="badge-role badge-{{ current_user.role.name }}">{{ current_user.role.label_fr if current_lang=='fr' else current_user.role.label_ar }}</span>
+            {% if current_user.is_verified %}<span class="verified-tag"><i class="bi bi-patch-check-fill"></i> {{ 'Vérifié' if current_lang=='fr' else 'موثق' }}</span>{% endif %}
+        </div>
+    </div>
+
+    <form method="post" action="{{ url_for('profile') }}" enctype="multipart/form-data" novalidate class="needs-validation" data-validate>
+        {{ form.hidden_tag() }}
+        <div class="row g-3">
+            <div class="col-md-6 form-floating">
+                {{ form.first_name(class='form-control') }}
+                <label>{{ form.first_name.label.text }}</label>
+            </div>
+            <div class="col-md-6 form-floating">
+                {{ form.last_name(class='form-control') }}
+                <label>{{ form.last_name.label.text }}</label>
+            </div>
+            <div class="col-md-6 form-floating">
+                <input class="form-control" value="{{ current_user.email }}" disabled>
+                <label>{{ 'Adresse e-mail' if current_lang=='fr' else 'البريد الإلكتروني' }}</label>
+            </div>
+            <div class="col-md-6 form-floating">
+                {{ form.phone(class='form-control') }}
+                <label>{{ form.phone.label.text }}</label>
+            </div>
+            {% if current_user.citizen_profile %}
+            <div class="col-md-6 form-floating">
+                {{ form.address(class='form-control') }}
+                <label>{{ form.address.label.text }}</label>
+            </div>
+            <div class="col-md-6 form-floating">
+                {{ form.city(class='form-control') }}
+                <label>{{ form.city.label.text }}</label>
+            </div>
+            {% endif %}
+            <div class="col-md-6">
+                <label class="form-label">{{ form.avatar.label.text }}</label>
+                {{ form.avatar(class='form-control', accept='image/*', **{'data-preview':'avatarPreview'}) }}
+                <img id="avatarPreview" class="upload-preview" alt="">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">{{ form.preferred_language.label.text }}</label>
+                {{ form.preferred_language(class='form-select') }}
+            </div>
+        </div>
+        {{ form.submit(class='btn btn-primary-custom mt-4') }}
+    </form>
+</div>
+{% endblock %}

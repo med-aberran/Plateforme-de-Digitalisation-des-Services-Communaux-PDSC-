@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Tableau de bord' if current_lang=='fr' else 'لوحة القيادة' }}{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+    <div>
+        <h1>{{ 'Bonjour' if current_lang=='fr' else 'مرحبا' }}, {{ current_user.first_name }} 👋</h1>
+        <p>{{ 'Voici les demandes et rendez-vous qui vous concernent.' if current_lang=='fr' else 'إليكم الطلبات والمواعيد التي تخصكم.' }}</p>
+    </div>
+    <a href="{{ url_for('export_requests_excel') }}" class="btn btn-outline-custom"><i class="bi bi-file-earmark-excel"></i> {{ 'Exporter en Excel' if current_lang=='fr' else 'تصدير Excel' }}</a>
+</div>
+
+<div class="kpi-grid">
+    <div class="kpi-card kpi-primary">
+        <i class="bi bi-file-earmark-text"></i>
+        <div><span class="kpi-number">{{ stats.total_requests }}</span><span class="kpi-label">{{ 'Demandes totales' if current_lang=='fr' else 'إجمالي الطلبات' }}</span></div>
+    </div>
+    <div class="kpi-card kpi-warning">
+        <i class="bi bi-hourglass-split"></i>
+        <div><span class="kpi-number">{{ stats.pending_requests }}</span><span class="kpi-label">{{ 'En attente' if current_lang=='fr' else 'قيد الانتظار' }}</span></div>
+    </div>
+    <div class="kpi-card kpi-success">
+        <i class="bi bi-check-circle"></i>
+        <div><span class="kpi-number">{{ stats.completed_requests }}</span><span class="kpi-label">{{ 'Terminées' if current_lang=='fr' else 'منجزة' }}</span></div>
+    </div>
+    <div class="kpi-card kpi-info">
+        <i class="bi bi-calendar-check"></i>
+        <div><span class="kpi-number">{{ stats.upcoming_appointments }}</span><span class="kpi-label">{{ 'RDV à venir' if current_lang=='fr' else 'مواعيد قادمة' }}</span></div>
+    </div>
+    <div class="kpi-card kpi-danger">
+        <i class="bi bi-megaphone"></i>
+        <div><span class="kpi-number">{{ stats.open_complaints }}</span><span class="kpi-label">{{ 'Réclamations ouvertes' if current_lang=='fr' else 'شكايات مفتوحة' }}</span></div>
+    </div>
+</div>
+
+<div class="dashboard-grid dashboard-grid-2">
+    <div class="content-card">
+        <div class="card-header-row">
+            <h3><i class="bi bi-file-earmark-text"></i> {{ 'Demandes récentes' if current_lang=='fr' else 'أحدث الطلبات' }}</h3>
+            <a href="{{ url_for('requests_list') }}">{{ 'Voir tout' if current_lang=='fr' else 'عرض الكل' }}</a>
+        </div>
+        <div class="table-responsive-custom">
+            <table class="table-custom">
+                <thead><tr>
+                    <th>{{ 'N° suivi' if current_lang=='fr' else 'رقم التتبع' }}</th>
+                    <th>{{ 'Citoyen' if current_lang=='fr' else 'المواطن' }}</th>
+                    <th>{{ 'Statut' if current_lang=='fr' else 'الحالة' }}</th>
+                    <th></th>
+                </tr></thead>
+                <tbody>
+                    {% for r in recent_requests %}
+                    <tr>
+                        <td><span class="mono">{{ r.tracking_number }}</span></td>
+                        <td>{{ r.citizen.user.full_name }}</td>
+                        <td><span class="badge-status badge-{{ r.status_css() }}">{{ r.status_label(current_lang) }}</span></td>
+                        <td class="text-end"><a href="{{ url_for('request_detail', request_id=r.id) }}" class="btn btn-sm btn-outline-custom">{{ 'Voir' if current_lang=='fr' else 'عرض' }}</a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4"><p class="empty-state">{{ 'Aucune demande pour le moment.' if current_lang=='fr' else 'لا توجد طلبات حاليا.' }}</p></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <div class="card-header-row">
+            <h3><i class="bi bi-bell"></i> {{ 'Notifications' if current_lang=='fr' else 'الإشعارات' }}</h3>
+        </div>
+        <ul class="mini-list">
+            {% for n in recent_notifications %}
+            <li class="{{ '' if n.is_read else 'unread' }}">
+                <span>{{ n.title }}</span>
+                <span class="text-muted-custom">{{ n.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+            </li>
+            {% else %}
+            <li class="empty-state">{{ 'Aucune notification.' if current_lang=='fr' else 'لا توجد إشعارات.' }}</li>
+            {% endfor %}
+        </ul>
+        <hr>
+        <div class="quick-links">
+            <a href="{{ url_for('appointments_list') }}"><i class="bi bi-calendar-check"></i> {{ 'Gérer les rendez-vous' if current_lang=='fr' else 'إدارة المواعيد' }}</a>
+            <a href="{{ url_for('complaints_list') }}"><i class="bi bi-megaphone"></i> {{ 'Traiter les réclamations' if current_lang=='fr' else 'معالجة الشكايات' }}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

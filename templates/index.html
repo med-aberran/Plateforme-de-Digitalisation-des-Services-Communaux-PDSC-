@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Accueil' if current_lang=='fr' else 'الرئيسية' }}{% endblock %}
+{% block content %}
+
+{% if search_results is not none %}
+<!-- ============================= RESULTATS DE RECHERCHE ============================= -->
+<section class="search-results-section">
+    <div class="container">
+        <h1>{{ 'Résultats pour' if current_lang=='fr' else 'نتائج البحث عن' }} « {{ search_query }} »</h1>
+        {% set total = search_results.services|length + search_results.news|length + search_results.documents|length %}
+        <p class="text-muted-custom">{{ total }} {{ 'résultat(s) trouvé(s)' if current_lang=='fr' else 'نتيجة تم العثور عليها' }}</p>
+
+        {% if search_results.services %}
+        <h4 class="section-subtitle">{{ 'Services' if current_lang=='fr' else 'الخدمات' }}</h4>
+        <div class="row g-3 mb-4">
+            {% for s in search_results.services %}
+            <div class="col-md-4"><a href="{{ url_for('service_detail', slug=s.slug) }}" class="search-result-item"><i class="bi {{ s.icon }}"></i> {{ s.name_fr if current_lang=='fr' else s.name_ar }}</a></div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if search_results.news %}
+        <h4 class="section-subtitle">{{ 'Actualités' if current_lang=='fr' else 'الأخبار' }}</h4>
+        <div class="row g-3 mb-4">
+            {% for n in search_results.news %}
+            <div class="col-md-4"><a href="{{ url_for('news_detail', news_id=n.id) }}" class="search-result-item"><i class="bi bi-newspaper"></i> {{ n.title_fr if current_lang=='fr' else n.title_ar }}</a></div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if search_results.documents %}
+        <h4 class="section-subtitle">{{ 'Documents' if current_lang=='fr' else 'الوثائق' }}</h4>
+        <div class="row g-3 mb-4">
+            {% for d in search_results.documents %}
+            <div class="col-md-4"><a href="{{ url_for('static', filename='uploads/' ~ d.file_path) }}" target="_blank" class="search-result-item"><i class="bi bi-file-earmark-pdf"></i> {{ d.title_fr if current_lang=='fr' else d.title_ar }}</a></div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if total == 0 %}
+        <p class="empty-state">{{ "Aucun résultat ne correspond à votre recherche." if current_lang=='fr' else 'لا توجد نتائج تطابق بحثكم.' }}</p>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+
+<!-- ============================= SLIDER / HERO ============================= -->
+<section class="hero-slider">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            {% for n in news_items[:4] %}<button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ loop.index }}"></button>{% endfor %}
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="hero-slide hero-slide-default">
+                    <div class="hero-pattern"></div>
+                    <div class="container hero-slide-content">
+                        <span class="hero-eyebrow">{{ 'Plateforme de Digitalisation des Services Communaux' if current_lang=='fr' else 'منصة رقمنة الخدمات الجماعية' }}</span>
+                        <h1>{{ commune_name_fr if current_lang=='fr' else commune_name_ar }}</h1>
+                        <p>{{ "Toutes vos démarches administratives, accessibles en ligne, en toute simplicité." if current_lang=='fr' else 'جميع إجراءاتكم الإدارية متاحة عبر الإنترنت بكل بساطة.' }}</p>
+                        <div class="hero-actions">
+                            <a href="{{ url_for('services_list') }}" class="btn btn-hero-primary">{{ 'Découvrir les services' if current_lang=='fr' else 'اكتشف الخدمات' }}</a>
+                            <a href="{{ url_for('track_request_form') }}" class="btn btn-hero-outline">{{ 'Suivre ma demande' if current_lang=='fr' else 'تتبع طلبي' }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% for n in news_items[:4] %}
+            <div class="carousel-item">
+                <div class="hero-slide" {% if n.image %}style="background-image:url('{{ url_for('static', filename='uploads/' ~ n.image) }}')"{% endif %}>
+                    <div class="hero-slide-overlay"></div>
+                    <div class="container hero-slide-content">
+                        <span class="hero-eyebrow">{{ 'Actualité' if current_lang=='fr' else 'خبر' }} · {{ n.published_at.strftime('%d/%m/%Y') }}</span>
+                        <h1>{{ n.title_fr if current_lang=='fr' else n.title_ar }}</h1>
+                        <a href="{{ url_for('news_detail', news_id=n.id) }}" class="btn btn-hero-primary">{{ 'Lire la suite' if current_lang=='fr' else 'اقرأ المزيد' }}</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+    </div>
+</section>
+
+<!-- ============================= PRESENTATION ============================= -->
+<section class="presentation-section">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <span class="section-eyebrow">{{ 'Qui sommes-nous' if current_lang=='fr' else 'من نحن' }}</span>
+                <h2>{{ 'Une administration moderne au service du citoyen' if current_lang=='fr' else 'إدارة عصرية في خدمة المواطن' }}</h2>
+                <p>{{ "Depuis sa création, la commune œuvre pour un service public de proximité, transparent et efficace. Notre mission est de simplifier chaque démarche administrative et de rapprocher l'administration des citoyens grâce au numérique." if current_lang=='fr' else 'منذ تأسيسها، تعمل الجماعة على تقديم خدمة عمومية قريبة من المواطن، شفافة وفعالة. تتمثل مهمتنا في تبسيط كل إجراء إداري وتقريب الإدارة من المواطنين بفضل الرقمنة.' }}</p>
+                <p>{{ "Notre vision : faire de cette plateforme la porte d'entrée unique et fiable vers l'ensemble des services communaux, disponible 24h/24 et 7j/7." if current_lang=='fr' else 'رؤيتنا: جعل هذه المنصة البوابة الوحيدة والموثوقة نحو جميع الخدمات الجماعية، متاحة على مدار الساعة طوال أيام الأسبوع.' }}</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-number" data-count="14">0</span>
+                        <span class="stat-label">{{ 'Services numérisés' if current_lang=='fr' else 'خدمة مرقمنة' }}</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number" data-count="80000">0</span>
+                        <span class="stat-label">{{ 'Citoyens inscrits' if current_lang=='fr' else 'مواطن مسجل' }}</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number" data-count="80">0</span>
+                        <span class="stat-label">%{{ ' de demandes traitées' if current_lang=='fr' else ' من الطلبات المعالجة' }}</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number" data-count="12">0</span>
+                        <span class="stat-label">{{ "Départements actifs" if current_lang=='fr' else 'قسم نشط' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================= SERVICES ============================= -->
+<section class="services-section" id="services">
+    <div class="container">
+        <div class="section-heading text-center">
+            <span class="section-eyebrow">{{ 'Nos services' if current_lang=='fr' else 'خدماتنا' }}</span>
+            <h2>{{ 'Des démarches simplifiées, en ligne' if current_lang=='fr' else 'إجراءات مبسطة، عبر الإنترنت' }}</h2>
+        </div>
+        <div class="row g-4">
+            {% for s in services[:8] %}
+            <div class="col-md-6 col-lg-3">
+                <div class="service-card">
+                    <div class="service-card-media">
+                        {% if s.image %}<img src="{{ url_for('static', filename='uploads/' ~ s.image) }}" alt="{{ s.name_fr }}">{% else %}<div class="service-card-media-placeholder"><i class="bi {{ s.icon }}"></i></div>{% endif %}
+                    </div>
+                    <div class="service-card-body">
+                        <span class="service-icon"><i class="bi {{ s.icon }}"></i></span>
+                        <h3>{{ s.name_fr if current_lang=='fr' else s.name_ar }}</h3>
+                        <p>{{ (s.description_fr if current_lang=='fr' else s.description_ar) | truncate(80) }}</p>
+                        <a href="{{ url_for('service_detail', slug=s.slug) }}" class="service-link">{{ 'En savoir plus' if current_lang=='fr' else 'اعرف المزيد' }} <i class="bi bi-arrow-{{ 'left' if current_lang=='ar' else 'right' }}"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p class="empty-state">{{ 'Aucun service disponible pour le moment.' if current_lang=='fr' else 'لا توجد خدمات متاحة حاليا.' }}</p>
+            {% endfor %}
+        </div>
+        {% if services|length > 8 %}
+        <div class="text-center mt-4"><a href="{{ url_for('services_list') }}" class="btn btn-outline-custom">{{ 'Voir tous les services' if current_lang=='fr' else 'عرض جميع الخدمات' }}</a></div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ============================= ACTUALITES ============================= -->
+<section class="news-section" id="actualites">
+    <div class="container">
+        <div class="section-heading">
+            <div>
+                <span class="section-eyebrow">{{ 'Actualités' if current_lang=='fr' else 'الأخبار' }}</span>
+                <h2>{{ 'Dernières actualités & événements' if current_lang=='fr' else 'آخر الأخبار والفعاليات' }}</h2>
+            </div>
+            <a href="{{ url_for('news_list') }}" class="btn btn-outline-custom">{{ 'Toutes les actualités' if current_lang=='fr' else 'كل الأخبار' }}</a>
+        </div>
+        <div class="row g-4">
+            {% for n in news_items[:3] %}
+            <div class="col-md-4">
+                <a href="{{ url_for('news_detail', news_id=n.id) }}" class="news-card">
+                    <div class="news-card-media">
+                        {% if n.image %}<img src="{{ url_for('static', filename='uploads/' ~ n.image) }}" alt="">{% else %}<div class="news-card-media-placeholder"><i class="bi bi-newspaper"></i></div>{% endif %}
+                    </div>
+                    <div class="news-card-body">
+                        <span class="news-date">{{ n.published_at.strftime('%d/%m/%Y') }}</span>
+                        <h4>{{ n.title_fr if current_lang=='fr' else n.title_ar }}</h4>
+                        <p>{{ (n.content_fr if current_lang=='fr' else n.content_ar) | truncate(90) }}</p>
+                    </div>
+                </a>
+            </div>
+            {% else %}
+            <p class="empty-state">{{ 'Aucune actualité publiée pour le moment.' if current_lang=='fr' else 'لا توجد أخبار منشورة حاليا.' }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ============================= DOCUMENTS PUBLICS ============================= -->
+<section class="documents-section" id="documents">
+    <div class="container">
+        <div class="section-heading">
+            <div>
+                <span class="section-eyebrow">{{ 'Ressources' if current_lang=='fr' else 'الموارد' }}</span>
+                <h2>{{ 'Documents publics' if current_lang=='fr' else 'الوثائق العمومية' }}</h2>
+                <p>{{ 'Formulaires, règlements et documents officiels à télécharger.' if current_lang=='fr' else 'استمارات وأنظمة ووثائق رسمية للتحميل.' }}</p>
+            </div>
+            <a href="{{ url_for('documents_list') }}" class="btn btn-outline-custom">{{ 'Parcourir tous les documents' if current_lang=='fr' else 'تصفح جميع الوثائق' }}</a>
+        </div>
+        <div class="documents-grid">
+            {% for d in documents %}
+            <a href="{{ url_for('static', filename='uploads/' ~ d.file_path) }}" target="_blank" class="document-item">
+                <span class="document-icon"><i class="bi bi-file-earmark-pdf-fill"></i></span>
+                <div>
+                    <strong>{{ d.title_fr if current_lang=='fr' else d.title_ar }}</strong>
+                    <span class="document-category">
+                        {{ d.category }}{% if d.service %} · {{ d.service.name_fr if current_lang=='fr' else d.service.name_ar }}{% endif %}
+                    </span>
+                </div>
+                <i class="bi bi-download document-download-icon"></i>
+            </a>
+            {% else %}
+            <p class="empty-state">{{ 'Aucun document disponible pour le moment.' if current_lang=='fr' else 'لا توجد وثائق متاحة حاليا.' }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ============================= GALERIE ============================= -->
+<section class="gallery-section" id="galerie">
+    <div class="container">
+        <div class="section-heading text-center">
+            <span class="section-eyebrow">{{ 'Galerie' if current_lang=='fr' else 'المعرض' }}</span>
+            <h2>{{ 'Vie de la commune en images' if current_lang=='fr' else 'حياة الجماعة بالصور' }}</h2>
+        </div>
+        <div class="gallery-grid">
+            {% for img in gallery_images %}
+            <a href="{{ url_for('static', filename='uploads/' ~ img.image_path) }}" class="gallery-item" data-lightbox="{{ img.title_fr }}">
+                <img src="{{ url_for('static', filename='uploads/' ~ img.image_path) }}" alt="{{ img.title_fr }}" loading="lazy">
+                <span class="gallery-overlay"><i class="bi bi-zoom-in"></i></span>
+            </a>
+            {% else %}
+            <p class="empty-state">{{ 'Aucune image dans la galerie pour le moment.' if current_lang=='fr' else 'لا توجد صور في المعرض حاليا.' }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ============================= VIDEOS ============================= -->
+{% if videos %}
+<section class="videos-section" id="videos">
+    <div class="container">
+        <div class="section-heading text-center">
+            <span class="section-eyebrow">{{ 'Vidéos' if current_lang=='fr' else 'الفيديوهات' }}</span>
+            <h2>{{ 'La commune en vidéo' if current_lang=='fr' else 'الجماعة بالفيديو' }}</h2>
+        </div>
+        <div class="row g-4">
+            {% for v in videos %}
+            <div class="col-md-4">
+                <div class="video-embed-wrap">
+                    <iframe src="{{ v.url }}" title="{{ v.title_fr }}" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <h5>{{ v.title_fr if current_lang=='fr' else v.title_ar }}</h5>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ============================= VISIONNEUSE PDF - PLAN D'AMENAGEMENT ============================= -->
+{% if urban_plan %}
+<section class="urban-plan-section" id="plan-amenagement">
+    <div class="container">
+        <div class="section-heading text-center">
+            <span class="section-eyebrow">{{ 'Urbanisme' if current_lang=='fr' else 'التعمير' }}</span>
+            <h2>{{ "Plan d'aménagement" if current_lang=='fr' else 'التصميم الترابي' }}</h2>
+            <p>{{ urban_plan.description_fr if current_lang=='fr' else urban_plan.description_ar }}</p>
+        </div>
+        <div class="pdf-viewer-toolbar">
+            <span><i class="bi bi-file-earmark-pdf"></i> {{ urban_plan.title_fr if current_lang=='fr' else urban_plan.title_ar }}</span>
+            <div class="pdf-viewer-actions">
+                <button type="button" id="pdfZoomOut" title="Zoom -"><i class="bi bi-zoom-out"></i></button>
+                <button type="button" id="pdfZoomIn" title="Zoom +"><i class="bi bi-zoom-in"></i></button>
+                <button type="button" id="pdfPrint" title="Imprimer"><i class="bi bi-printer"></i></button>
+                <a href="{{ url_for('static', filename='uploads/' ~ urban_plan.file_path) }}" download title="Télécharger"><i class="bi bi-download"></i></a>
+                <button type="button" id="pdfFullscreen" title="Plein écran"><i class="bi bi-arrows-fullscreen"></i></button>
+            </div>
+        </div>
+        <div class="pdf-viewer-frame" id="pdfViewerFrame">
+            <iframe id="pdfViewerIframe" src="{{ url_for('static', filename='uploads/' ~ urban_plan.file_path) }}" title="{{ urban_plan.title_fr }}"></iframe>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ============================= GOOGLE MAPS ============================= -->
+<section class="map-section" id="localisation">
+    <div class="container">
+        <div class="section-heading text-center">
+            <span class="section-eyebrow">{{ 'Localisation' if current_lang=='fr' else 'الموقع' }}</span>
+            <h2>{{ 'Où nous trouver' if current_lang=='fr' else 'أين نحن' }}</h2>
+        </div>
+        <div class="map-embed-wrap">
+            <iframe
+                src="https://www.google.com/maps?q={{ commune_name_fr | urlencode }}&output=embed"
+                loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="{{ 'Localisation de la commune' if current_lang=='fr' else 'موقع الجماعة' }}">
+            </iframe>
+        </div>
+    </div>
+</section>
+
+<!-- ============================= CONTACT ============================= -->
+<section class="contact-section" id="contact">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-5">
+                <span class="section-eyebrow">{{ 'Contact' if current_lang=='fr' else 'اتصل بنا' }}</span>
+                <h2>{{ 'Une question ? Contactez-nous' if current_lang=='fr' else 'لديكم سؤال؟ تواصلوا معنا' }}</h2>
+                <ul class="contact-info-list">
+                    <li><i class="bi bi-geo-alt-fill"></i> <span>{{ 'Centre de Zinat, Province de Tétouan, Maroc' if current_lang=='fr' else 'مركز زينات، إقليم تطوان، المغرب' }}</span></li>
+                    <li><i class="bi bi-telephone-fill"></i> <span>+212 706530239</span></li>
+                    <li><i class="bi bi-envelope-fill"></i> <span>contact@commune.ma</span></li>
+                    <li><i class="bi bi-clock-fill"></i> <span>{{ 'Lun - Ven : 8h30 - 16h30' if current_lang=='fr' else 'الإثنين - الجمعة: 8:30 - 16:30' }}</span></li>
+                </ul>
+                <div class="footer-social contact-social">
+                    <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="content-card">
+                    <form method="post" action="{{ url_for('contact') }}" novalidate class="needs-validation" data-validate>
+                        {{ contact_form.hidden_tag() }}
+                        <div class="row g-3">
+                            <div class="col-md-6 form-floating">
+                                {{ contact_form.name(class='form-control', placeholder='Nom') }}
+                                <label>{{ contact_form.name.label.text }}</label>
+                            </div>
+                            <div class="col-md-6 form-floating">
+                                {{ contact_form.email(class='form-control', placeholder='Email') }}
+                                <label>{{ contact_form.email.label.text }}</label>
+                            </div>
+                            <div class="col-12 form-floating">
+                                {{ contact_form.subject(class='form-control', placeholder='Objet') }}
+                                <label>{{ contact_form.subject.label.text }}</label>
+                            </div>
+                            <div class="col-12 form-floating">
+                                {{ contact_form.message(class='form-control', placeholder='Message', style='height:130px') }}
+                                <label>{{ contact_form.message.label.text }}</label>
+                            </div>
+                        </div>
+                        {{ contact_form.submit(class='btn btn-primary-custom mt-3') }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

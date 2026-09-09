@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Documents publics' if current_lang=='fr' else 'الوثائق العمومية' }}{% endblock %}
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <h1>{{ 'Documents publics' if current_lang=='fr' else 'الوثائق العمومية' }}</h1>
+        <p>{{ 'Formulaires, règlements et documents officiels, classés par service.' if current_lang=='fr' else 'استمارات وأنظمة ووثائق رسمية، مصنفة حسب الخدمة.' }}</p>
+    </div>
+</section>
+
+<div class="container page-section">
+    <form method="get" action="{{ url_for('documents_list') }}" class="document-search-bar">
+        <div class="document-search-input">
+            <i class="bi bi-search"></i>
+            <input type="text" name="q" value="{{ query_text }}" placeholder="{{ 'Rechercher par titre, référence…' if current_lang=='fr' else 'البحث بالعنوان أو المرجع…' }}">
+        </div>
+        <select name="service" class="form-select">
+            <option value="">{{ 'Tous les services' if current_lang=='fr' else 'جميع الخدمات' }}</option>
+            {% for s in services %}
+            <option value="{{ s.id }}" {{ 'selected' if service_id == s.id }}>{{ s.name_fr if current_lang=='fr' else s.name_ar }}</option>
+            {% endfor %}
+        </select>
+        <select name="category" class="form-select">
+            <option value="">{{ 'Toutes les catégories' if current_lang=='fr' else 'جميع الفئات' }}</option>
+            {% for code, fr, ar in categories %}
+            <option value="{{ code }}" {{ 'selected' if category == code }}>{{ fr if current_lang=='fr' else ar }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary-custom">{{ 'Rechercher' if current_lang=='fr' else 'بحث' }}</button>
+        {% if query_text or service_id or category %}
+        <a href="{{ url_for('documents_list') }}" class="btn btn-outline-custom">{{ 'Réinitialiser' if current_lang=='fr' else 'إعادة تعيين' }}</a>
+        {% endif %}
+    </form>
+
+    <p class="text-muted-custom mb-4">
+        {{ pagination.total }} {{ 'document(s) trouvé(s)' if current_lang=='fr' else 'وثيقة تم العثور عليها' }}
+    </p>
+
+    <div class="documents-grid documents-grid-browse">
+        {% for d in documents %}
+        <a href="{{ url_for('static', filename='uploads/' ~ d.file_path) }}" target="_blank" class="document-item document-item-lg">
+            <span class="document-icon"><i class="bi bi-file-earmark-pdf-fill"></i></span>
+            <div>
+                <strong>{{ d.title_fr if current_lang=='fr' else d.title_ar }}</strong>
+                <span class="document-category">
+                    {{ d.category }}
+                    {%- if d.reference %} · {{ d.reference }}{% endif %}
+                    {%- if d.service %} · {{ d.service.name_fr if current_lang=='fr' else d.service.name_ar }}{% endif %}
+                </span>
+                <span class="document-date">{{ d.uploaded_at.strftime('%d/%m/%Y') }}</span>
+            </div>
+            <i class="bi bi-download document-download-icon"></i>
+        </a>
+        {% else %}
+        <p class="empty-state">{{ 'Aucun document ne correspond à votre recherche.' if current_lang=='fr' else 'لا توجد وثيقة تطابق بحثكم.' }}</p>
+        {% endfor %}
+    </div>
+
+    {% if pagination and pagination.pages > 1 %}
+    <nav class="pagination-custom">
+        <ul class="pagination">
+            <li class="page-item {{ 'disabled' if not pagination.has_prev }}">
+                <a class="page-link" href="{{ url_for('documents_list', page=pagination.prev_num, q=query_text, service=service_id, category=category) }}">&laquo;</a>
+            </li>
+            {% for p in pagination.iter_pages() %}
+            <li class="page-item {{ 'active' if p == pagination.page }}">
+                <a class="page-link" href="{{ url_for('documents_list', page=p, q=query_text, service=service_id, category=category) if p else '#' }}">{{ p or '…' }}</a>
+            </li>
+            {% endfor %}
+            <li class="page-item {{ 'disabled' if not pagination.has_next }}">
+                <a class="page-link" href="{{ url_for('documents_list', page=pagination.next_num, q=query_text, service=service_id, category=category) }}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

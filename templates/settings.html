@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Paramètres' if current_lang=='fr' else 'الإعدادات' }}{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+    <h1>{{ 'Paramètres du compte' if current_lang=='fr' else 'إعدادات الحساب' }}</h1>
+    <p>{{ 'Sécurité et préférences de votre compte' if current_lang=='fr' else 'أمان وتفضيلات حسابكم' }}</p>
+</div>
+
+<div class="settings-grid">
+    <div class="content-card">
+        <h3><i class="bi bi-shield-lock"></i> {{ 'Sécurité' if current_lang=='fr' else 'الأمان' }}</h3>
+        <p class="text-muted-custom">{{ 'Changez votre mot de passe régulièrement pour sécuriser votre compte.' if current_lang=='fr' else 'قم بتغيير كلمة المرور بانتظام لتأمين حسابكم.' }}</p>
+        <form method="post" action="{{ url_for('account_settings') }}" novalidate class="needs-validation" data-validate>
+            {{ password_form.hidden_tag() }}
+            <div class="form-floating mb-3">
+                {{ password_form.current_password(class='form-control') }}
+                <label>{{ password_form.current_password.label.text }}</label>
+            </div>
+            <div class="form-floating mb-3 password-field">
+                {{ password_form.password(class='form-control') }}
+                <label>{{ password_form.password.label.text }}</label>
+                <button type="button" class="password-toggle" tabindex="-1"><i class="bi bi-eye"></i></button>
+            </div>
+            <div class="form-floating mb-3">
+                {{ password_form.confirm_password(class='form-control') }}
+                <label>{{ password_form.confirm_password.label.text }}</label>
+            </div>
+            {{ password_form.submit(class='btn btn-primary-custom') }}
+        </form>
+    </div>
+
+    <div class="content-card">
+        <h3><i class="bi bi-bell"></i> {{ 'Préférences' if current_lang=='fr' else 'التفضيلات' }}</h3>
+        <div class="settings-toggle-row">
+            <div>
+                <strong>{{ 'Mode sombre' if current_lang=='fr' else 'الوضع الليلي' }}</strong>
+                <span>{{ "Confortable pour une utilisation nocturne" if current_lang=='fr' else 'مريح للاستخدام الليلي' }}</span>
+            </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="darkModeSettingsToggle">
+            </div>
+        </div>
+        <div class="settings-toggle-row">
+            <div>
+                <strong>{{ 'Langue préférée' if current_lang=='fr' else 'اللغة المفضلة' }}</strong>
+                <span>{{ 'Affichage par défaut de la plateforme' if current_lang=='fr' else 'العرض الافتراضي للمنصة' }}</span>
+            </div>
+            <div class="btn-group">
+                <a href="{{ url_for('set_language', lang_code='fr') }}" class="btn btn-sm {{ 'btn-primary-custom' if current_lang=='fr' else 'btn-outline-custom' }}">FR</a>
+                <a href="{{ url_for('set_language', lang_code='ar') }}" class="btn btn-sm {{ 'btn-primary-custom' if current_lang=='ar' else 'btn-outline-custom' }}">AR</a>
+            </div>
+        </div>
+        <div class="settings-toggle-row">
+            <div>
+                <strong>{{ 'Notifications par e-mail' if current_lang=='fr' else 'الإشعارات عبر البريد' }}</strong>
+                <span>{{ 'Recevoir un e-mail à chaque mise à jour de vos demandes' if current_lang=='fr' else 'تلقي بريد إلكتروني عند كل تحديث لطلباتكم' }}</span>
+            </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" checked disabled>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -46,7 +46,7 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL',
-        'postgresql://pdsc_user:pdsc_password@localhost:5432/pdsc_db'
+        'https://csvhkzparcagccqsffwe.supabase.co'
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -203,7 +203,7 @@ class TestingConfig(Config):
 
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'TEST_DATABASE_URL',
-        'postgresql://pdsc_user:pdsc_password@localhost:5432/pdsc_test_db'
+        'https://csvhkzparcagccqsffwe.supabase.co'
     )
 
 

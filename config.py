@@ -10,6 +10,9 @@ via des variables d'environnement (fichier .env en developpement).
 import os
 from datetime import timedelta
 
+from sqlalchemy.pool import NullPool
+
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Charge le fichier .env s'il existe (developpement local)
